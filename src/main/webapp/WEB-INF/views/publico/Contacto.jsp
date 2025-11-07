@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacto – Sistema de Ventas</title>
+    <link rel="stylesheet" href="../CSS/Contacto.css" />
+    <link rel="stylesheet" href="../CSS/Navbar.css" />
+    <link rel="stylesheet" href="../CSS/Footer.css" />
+    <style>
+      /* opcional: mejoras mínimas sin tocar tus hojas */
+      .hero small {
+        color: #9fb1c6;
+      }
+      .form .btn[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      @media print {
+        #navbar,
+        #footer,
+        .map {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar (estático) -->
+    <header id="navbar">
+      <nav class="navbar">
+        <div class="logo">Sistema de Ventas</div>
+        <ul class="nav-links">
+          <li><a class="nav-link" href="Main.html">Inicio</a></li>
+          <li><a class="nav-link" href="Catalogo.html">Catálogo</a></li>
+          <li><a class="nav-link" href="Contacto.html">Contacto</a></li>
+          <li><a class="nav-link" href="Publicidad.html">Publicidad</a></li>
+          <li><a class="btn nav-link" href="Login.html">Login</a></li>
+        </ul>
+        <button class="menu-toggle" aria-label="Menú">☰</button>
+      </nav>
+    </header>
+
+    <header class="hero">
+      <h1>Contáctanos</h1>
+      <p>
+        ¿Tienes dudas o una propuesta? Escríbenos y te responderemos pronto.
+      </p>
+      <small
+        >* Esta versión usa solo HTML+CSS. El envío abre tu correo
+        (mailto:).</small
+      >
+    </header>
+
+    <main class="wrapper">
+      <section class="cards">
+        <article class="card">
+          <div class="icon">📧</div>
+          <h3>Correo</h3>
+          <p>ventas-equipo@tuempresa.com</p>
+        </article>
+        <article class="card">
+          <div class="icon">📞</div>
+          <h3>Teléfono</h3>
+          <p>+51 900 000 000</p>
+        </article>
+        <article class="card">
+          <div class="icon">📍</div>
+          <h3>Dirección</h3>
+          <p>Av. Principal 123, Huancayo – Perú</p>
+        </article>
+      </section>
+
+      <section class="contact">
+        <!-- Formulario sin JS: usa mailto -->
+        <form
+          class="form"
+          id="form-contacto"
+          action="mailto:ventas-equipo@tuempresa.com"
+          method="post"
+          enctype="text/plain"
+          autocomplete="on"
+        >
+          <div class="grid-2">
+            <div class="field">
+              <input id="nombre" name="Nombre" required placeholder=" " />
+              <label for="nombre">Nombre</label><span class="focus-ring"></span>
+            </div>
+            <div class="field">
+              <input
+                type="email"
+                id="correo"
+                name="Correo"
+                required
+                placeholder=" "
+              />
+              <label for="correo">Correo</label><span class="focus-ring"></span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <input id="asunto" name="Asunto" required placeholder=" " />
+              <label for="asunto">Asunto</label><span class="focus-ring"></span>
+            </div>
+            <div class="field">
+              <input
+                id="telefono"
+                name="Teléfono"
+                inputmode="tel"
+                pattern="[0-9+\s-]{6,}"
+                placeholder=" "
+              />
+              <label for="telefono">Teléfono (opcional)</label
+              ><span class="focus-ring"></span>
+            </div>
+          </div>
+
+          <div class="field textarea">
+            <textarea
+              id="mensaje"
+              name="Mensaje"
+              rows="5"
+              required
+              placeholder=" "
+            ></textarea>
+            <label for="mensaje">Mensaje</label><span class="focus-ring"></span>
+          </div>
+
+          <button
+            class="btn primary"
+            type="submit"
+            title="Abrirá tu cliente de correo"
+          >
+            Enviar mensaje
+          </button>
+          <p class="note">
+            * El botón abrirá tu aplicación de correo con el mensaje listo para
+            enviar.
+          </p>
+        </form>
+
+        <!-- Mapa (estático) -->
+        <div class="map">
+          <iframe
+            src="https://www.google.com/maps?q=Huancayo,Peru&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>© 2025 Sistema de Ventas – Todos los derechos reservados</p>
+        <ul class="social-links">
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">WhatsApp</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

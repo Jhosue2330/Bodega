@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catálogo</title>
+
+<!-- Mantiene tu paleta/tipo porque reusa tus CSS -->
+<link rel="stylesheet" href="../CSS/Main.css" />
+<link rel="stylesheet" href="../CSS/Navbar.css" />
+<link rel="stylesheet" href="../CSS/Footer.css" />
+
+<style>
+/* —— Estilos SOLO para esta página (scoped) —— */
+.catalogo-page{width:min(1200px,94%);margin:18px auto 72px}
+.catalogo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text, #e5eefc);padding:6px 10px;border-radius:999px;font-size:12px}
+.title-wrap{display:flex;align-items:center;gap:10px}
+.title{font-weight:800;font-size:clamp(18px,2.2vw,22px)}
+.badge{font-size:12px;padding:6px 10px;border-radius:999px;background:linear-gradient(135deg,#34d399,#22d3ee);color:#05202a;font-weight:800;border:1px solid rgba(255,255,255,.1)}
+
+.toolbar{display:grid;gap:10px;margin:10px 0}
+@media(min-width:900px){.toolbar{grid-template-columns:1fr .8fr .8fr .6fr .6fr auto}}
+.input,.select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text, #e5eefc);border-radius:14px;padding:10px 12px}
+.btn{border-radius:14px;border:1px solid rgba(255,255,255,.12);padding:10px 14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:800}
+.btn.secondary{background:rgba(255,255,255,.06)}
+.btn.clean{background:linear-gradient(135deg,#6ee7b7,#60a5fa)}
+.cart{display:inline-flex;align-items:center;gap:8px}
+.cart .bubble{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:800;padding:0 6px;border:1px solid rgba(0,0,0,.25)}
+
+.grid{display:grid;gap:14px;margin-top:10px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1240px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden}
+.thumb{position:relative}
+.thumb img{display:block;width:100%;height:180px;object-fit:cover}
+@media(min-width:1240px){.thumb img{height:190px}}
+.cat-chip{position:absolute;left:10px;top:10px;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px;font-size:12px;color:#e5eefc}
+.body{padding:12px 14px 14px}
+.body h3{margin:2px 0 6px;font-size:clamp(14px,2vw,16px);font-weight:800}
+.body p{margin:0;color:var(--muted,#a5b4c8);font-size:13px}
+.row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.price{font-weight:900}
+.btn.add{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text,#e5eefc)}
+.btn.add:hover{background:linear-gradient(135deg,#22c55e,#06b6d4);color:#05202a;border-color:transparent}
+</style>
+</head>
+
+<body id="topCatalogo">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">Sistema de Ventas</div>
+    <ul class="nav-links">
+      <li><a class="nav-link" href="Main.html">Inicio</a></li>
+      <li><a class="nav-link active" href="Catalogo.html">Catálogo</a></li>
+      <li><a class="nav-link" href="Contacto.html">Contacto</a></li>
+      <li><a class="nav-link" href="Publicidad.html">Publicidad</a></li>
+      <li><a class="btn nav-link" href="Login.html">Login</a></li>
+    </ul>
+    <button class="menu-toggle" aria-label="Menú">☰</button>
+  </nav>
+
+  <main class="catalogo-page">
+
+  <!-- Encabezado -->
+  <div class="catalogo-top">
+    <span class="pill">Productos</span>
+    <div class="cart"><span>🛒 Carrito</span> <span class="bubble">0</span></div>
+  </div>
+
+  <!-- Filtros -->
+  <section class="card" style="padding:12px;border-radius:18px;margin-bottom:12px">
+    <div class="title-wrap" style="margin-bottom:10px">
+      <div class="title">Catálogo</div>
+      <span class="badge">Público</span>
+    </div>
+    <div class="toolbar">
+      <input class="input" placeholder="Buscar producto… (maqueta)" />
+      <select class="select">
+        <option>Todas las categorías</option>
+        <option>Aseo</option>
+        <option>Electrónica</option>
+        <option>Bebidas</option>
+        <option>Regalos</option>
+      </select>
+      <select class="select">
+        <option>Orden: Relevancia</option>
+        <option>Precio ↑</option>
+        <option>Precio ↓</option>
+      </select>
+      <input class="input" placeholder="Precio mín." />
+      <input class="input" placeholder="Precio máx." />
+      <button class="btn clean" type="button">Limpiar</button>
+    </div>
+  </section>
+
+  <!-- grilla de productos -->
+  <section class="grid">
+
+    <!-- 1 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/aseo-personal.jpg" alt="Productos de aseo personal" />
+        <span class="cat-chip">Aseo Personal</span>
+      </figure>
+      <div class="body">
+        <h3>Paquete de Aseo Personal</h3>
+        <p>Incluye jabón, pasta dental y shampoo.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 49.90</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/aseo.jpg" alt="Teclado Mecánico RGB" />
+        <span class="cat-chip">Aseo de Limpieza</span>
+      </figure>
+      <div class="body">
+        <h3>Teclado Mecánico RGB</h3>
+        <p>Productos de aseo de limpieza doméstica.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 189.00</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 3 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/Electronicos.webp" alt="Electrodoméstico" />
+        <span class="cat-chip">Electrónica</span>
+      </figure>
+      <div class="body">
+        <h3>Electrodoméstico</h3>
+        <p>Electrodomésticos en oferta.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 259.00</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 4 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/bebidas.jpg" alt="Bebidas alcohólicas" />
+        <span class="cat-chip">Bebidas</span>
+      </figure>
+      <div class="body">
+        <h3>Bebidas alcohólicas</h3>
+        <p>Para citas y eventos.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 119.90</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 5 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/regalos.jpg" alt="Regalos para de todo tipo" />
+        <span class="cat-chip">Regalos</span>
+      </figure>
+      <div class="body">
+        <h3>Regalos</h3>
+        <p>Detalles para toda ocasión.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 79.90</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 6 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/aseo-personal.jpg" alt="Productos de aseo personal" />
+        <span class="cat-chip">Aseo</span>
+      </figure>
+      <div class="body">
+        <h3>Pack Higiene</h3>
+        <p>Incluye alcohol y gel antibacterial.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 29.90</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 7 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/aseo.jpg" alt="Teclado Mecánico RGB" />
+        <span class="cat-chip">Limpieza</span>
+      </figure>
+      <div class="body">
+        <h3>Detergente Premium</h3>
+        <p>Rinde más por carga.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 18.00</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+    <!-- 8 -->
+    <article class="card">
+      <figure class="thumb">
+        <img src="../Imagenes/Electronicos.webp" alt="Electrodoméstico" />
+        <span class="cat-chip">Electrónica</span>
+      </figure>
+      <div class="body">
+        <h3>Audífonos Inalámbricos</h3>
+        <p>Bluetooth, con estuche.</p>
+        <div class="row" style="display:flex;justify-content:space-between;align-items:center;"><div class="price">S/ 99.00</div>
+          <div class="card-actions"><a class="btn" href="#carrito">Comprar</a> <a class="btn outline" href="Venta.html">Agregar (admin)</a></div></div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============ MODAL: CARRITO (maqueta) ============ -->
+  <section id="carrito" class="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="modal-head">
+        <h3 id="cartTitle">🛒 Carrito</h3>
+        <a class="close" href="#topCatalogo" aria-label="Cerrar">✕</a>
+      </div>
+
+      <!-- Ítems de ejemplo -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Producto</th><th style="width:120px;">Cant.</th><th style="width:130px;">Precio</th><th style="width:130px;">Subtotal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Arroz 5Kg</td><td>1</td><td>S/ 32.90</td><td>S/ 32.90</td></tr>
+            <tr><td>Azúcar 1Kg</td><td>2</td><td>S/ 8.00</td><td>S/ 16.00</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><th colspan="3" style="text-align:right;">Total</th><th>S/ 48.90</th></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="card" style="padding:12px;border-radius:14px;margin-top:12px;">
+        <h4 style="margin:0 0 10px;">Datos de entrega</h4>
+        <div class="toolbar" style="display:grid;gap:10px;grid-template-columns:1fr 1fr;">
+          <input class="input" placeholder="Nombre y Apellidos"/>
+          <input class="input" placeholder="Teléfono"/>
+          <input class="input" placeholder="Dirección"/>
+          <input class="input" placeholder="Referencia (opcional)"/>
+        </div>
+        <div class="actions">
+          <a class="btn secondary" href="#topCatalogo">← Seguir comprando</a>
+          <a class="btn" href="#pedido-ok">Confirmar pedido</a>
+        </div>
+        <p class="note" style="margin-top:8px;">Maqueta: al confirmar, el pedido pasaría a Ventas (admin) para validación.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODAL: CONFIRMACIÓN ============ -->
+  <section id="pedido-ok" class="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="okTitle">
+      <div class="modal-head">
+        <h3 id="okTitle">✅ Pedido enviado</h3>
+        <a class="close" href="#topCatalogo" aria-label="Cerrar">✕</a>
+      </div>
+
+      <p class="sub" style="margin:6px 0 14px;">
+        Tu número de pedido es <strong>PED-001</strong>. El bodeguero confirmará stock y coordinará la entrega.
+      </p>
+      <div class="actions" style="justify-content:center;">
+        <a class="btn" href="#topCatalogo">Volver al catálogo</a>
+        <a class="btn secondary" href="Main.html">Inicio</a>
+      </div>
+
+      <div class="card" style="padding:10px;border-radius:12px;margin-top:14px;">
+        <p class="note" style="margin:0;">
+          Se conserva el botón <em>Agregar (admin)</em> para el flujo interno en <strong>Venta.html</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025 Sistema de Ventas – Maqueta</p>
+      <ul class="social-links">
+        <li><a href="#">Facebook</a></li><li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li><li><a href="#">WhatsApp</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

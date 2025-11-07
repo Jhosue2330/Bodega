@@ -1,42 +1,78 @@
-INSERT INTO  estudiante 
- (id, nombre, apellido, codigo, fecha_nacimiento) 
- VALUES (1, 'Roberto Geronimo','Zarate Mendoza','C28933', '1982-01-01');
+-- =======================================================
+-- LIMPIEZA (evita duplicados al reiniciar la app)
+-- =======================================================
+SET REFERENTIAL_INTEGRITY FALSE;
 
-INSERT INTO  estudiante 
- (id, nombre, apellido, codigo, fecha_nacimiento) 
- VALUES (2, 'Mercedes','Mendoza','C11111','1980-06-06');
-INSERT INTO  estudiante 
- (id, nombre, apellido, codigo, fecha_nacimiento) 
- VALUES (3, 'Edgar','Mendoza','C22222','1952-02-19');  
+TRUNCATE TABLE DETALLE_VENTA;
+TRUNCATE TABLE MOVIMIENTO_INVENTARIO;
+TRUNCATE TABLE PROMOCION_PRODUCTO;
+TRUNCATE TABLE VENTA;
+TRUNCATE TABLE PRODUCTO;
+TRUNCATE TABLE CATEGORIA;
+TRUNCATE TABLE ESTADO_VENTA;
+TRUNCATE TABLE USUARIO;
+TRUNCATE TABLE ROL;
+TRUNCATE TABLE PROMOCION;
 
-INSERT INTO  tipo_producto
- ( nombre, fechaCreacion) 
- VALUES ('Detergentes en polvo','2025-02-02');
+SET REFERENTIAL_INTEGRITY TRUE;
 
-INSERT INTO  tipo_producto
- ( nombre, fechaCreacion) 
- VALUES ('Detergentes liquidos','2025-02-04');
+-- =======================================================
+-- 1) ROLES
+-- =======================================================
+INSERT INTO ROL (id_rol, nombre) VALUES
+  (1, 'ADMINISTRADOR'),
+  (2, 'VENDEDOR'),
+  (3, 'REPARTIDOR'),
+  (4, 'CLIENTE');
 
-INSERT INTO  tipo_producto  
- ( nombre, fechaCreacion) 
- VALUES ('Detergentes enzimaticos ','2025-02-06');
+-- =======================================================
+-- 2) ESTADOS DE VENTA
+-- =======================================================
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES
+  (1, 'PENDIENTE'),
+  (2, 'REGISTRADA'),
+  (3, 'EN CAMINO'),
+  (4, 'ENTREGADO'),
+  (5, 'CANCELADO');
 
-INSERT INTO  producto
-( nombre, fecha_creacion, id_tipo_producto) 
- values ('Detergente en polvo Ariel','2025-02-02',1);
+-- =======================================================
+-- 3) CATEGORÍAS (incluye una desactivada para pruebas)
+-- =======================================================
+INSERT INTO CATEGORIA (nombre, descripcion, activo) VALUES
+  ('Abarrotes', 'Productos secos, granos y enlatados', TRUE),
+  ('Bebidas', 'Gaseosas, jugos y aguas', TRUE),
+  ('Snacks y Dulces', 'Frituras, galletas y golosinas', TRUE),
+  ('Limpieza', 'Productos para aseo del hogar', TRUE),
+  ('Licores', 'Cervezas y destilados', TRUE);
 
-INSERT INTO  producto 
-( nombre, fecha_creacion, id_tipo_producto) 
-values ('Detergente en polvo Ace','2025-02-04',1);
+INSERT INTO CATEGORIA (nombre, descripcion, activo) VALUES
+  ('Antiguo', 'Clasificación descontinuada (FLAG de prueba)', FALSE);
 
-INSERT INTO  producto 
-( nombre, fecha_creacion, id_tipo_producto) 
- values ('Detergente en polvo Omo','2025-02-06',1);
+-- =======================================================
+-- 4) USUARIOS (ADMIN, REPARTIDOR, CLIENTE)
+-- =======================================================
+INSERT INTO USUARIO (id_usuario, nombre_completo, correo, hash_password, telefono, id_rol, activo) VALUES
+  (1, 'Josdin Administrador', 'admin@bodega.com', 'pass_seguro', '900000001', 1, TRUE);
 
-INSERT INTO  producto
-( nombre, fecha_creacion, id_tipo_producto) 
- values ('Detergente liquido Ariel','2025-02-02',2);
+INSERT INTO USUARIO (id_usuario, nombre_completo, correo, hash_password, telefono, id_rol, activo) VALUES
+  (2, 'Carlos Repartidor', 'carlos@delivery.com', 'pass_seguro', '900000002', 3, TRUE);
 
-INSERT INTO  producto
-( nombre, fecha_creacion, id_tipo_producto )
-values ('Detergente liquido Ace','2025-02-04',2);
+INSERT INTO USUARIO (id_usuario, nombre_completo, correo, hash_password, telefono, id_rol, activo) VALUES
+  (3, 'Maria Cliente', 'maria@cliente.com', 'pass_seguro', '900000003', 4, TRUE);
+
+-- =======================================================
+-- 5) PRODUCTOS (referencian CATEGORIA)
+--    Nota: asume IDs autogenerados de categoría: 
+--          1=Abarrotes, 2=Bebidas, 3=Snacks y Dulces, 4=Limpieza, 5=Licores
+-- =======================================================
+INSERT INTO PRODUCTO (nombre, sku, precio, stock_actual, stock_minimo, id_categoria, activo) VALUES
+  ('Arroz Costeño 5Kg',      'ARC-5K',  24.50, 50, 10, 1, TRUE),
+  ('Aceite Primor 1L',       'ACE-1L',  11.90, 30,  5, 1, TRUE),
+  ('Gaseosa Coca-Cola 3L',   'GAS-C3L', 10.00, 45, 15, 2, TRUE),
+  ('Six Pack Cerveza Pilsen','CER-SP',  35.00, 20,  8, 5, TRUE);
+
+-- (Opcional) Semillas para PROMOCION si quieres probar el módulo:
+-- INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo) VALUES
+--   ('Promo Verano', 'Descuentos en bebidas', DATE '2025-01-01', DATE '2025-02-15', TRUE);
+-- INSERT INTO PROMOCION_PRODUCTO (id_promocion, id_producto, descuento_pct) VALUES
+--   (1, 3, 10.00);

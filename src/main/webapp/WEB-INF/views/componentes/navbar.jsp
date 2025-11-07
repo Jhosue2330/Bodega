@@ -1,0 +1,11 @@
+<nav class="navbar">
+  <div class="logo">Sistema de Ventas</div>
+  <ul class="nav-links">
+    <li><a class="nav-link" href="Main.html">Inicio</a></li>
+    <li><a class="nav-link" href="Catalogo.html">Catálogo</a></li>
+    <li><a class="nav-link" href="Contacto.html">Contacto</a></li>
+    <li><a class="nav-link" href="Publicidad.html">Publicidad</a></li>
+    <li><a class="btn nav-link" href="Login.html">Login</a></li>
+  </ul>
+  <button class="menu-toggle" aria-label="Menú">☰</button>
+</nav>
