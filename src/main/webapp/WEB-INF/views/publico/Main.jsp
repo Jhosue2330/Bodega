@@ -1,52 +1,50 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Inicio – Sistema de Ventas</title>
-
-    <link rel="stylesheet" href="/css/Main.css" />
-    <link rel="stylesheet" href="/css/Navbar.css" />
-    <link rel="stylesheet" href="/css/Footer.css" />
+    <link rel="stylesheet" href="../CSS/Navbar.css" />
+    <link rel="stylesheet" href="../CSS/Main.css" />
+    <link rel="stylesheet" href="../CSS/Footer.css" />
   </head>
   <body>
     <header id="navbar">
-      <%-- INSERCIÓN JSP: Asume que Navbar.jsp está en /WEB-INF/views/componentes --%> <%@ include
-      file="/componentes/Navbar.jsp" %>
+      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar.jsp" %>
     </header>
 
     <header class="hero">
       <h1>Bienvenido a la Bodega Josdin</h1>
-      <p class="sub">Administra tu bodega Josdin: ventas e inventario — rápido y simple.</p>
+      <p class="sub">Administra tu bodega: ventas e inventario — rápido y simple.</p>
       <div class="hero-actions">
-        <a class="btn primary" href="Catalogo.jsp">Abrir Catálogo</a>
-        <a class="btn ghost" href="Contacto.jsp">Contactos</a>
+        <a class="btn primary" href="<c:url value='/catalogo'/>">Abrir Catálogo</a>
+        <a class="btn ghost" href="<c:url value='/contacto'/>">Contactos</a>
       </div>
     </header>
 
     <main class="wrapper">
       <section class="quick grid-4">
-        <a class="qcard fade-up" style="--d: 0s" href="Catalogo.jsp">
+        <a class="qcard fade-up" style="--d: 0s" href="<c:url value='/catalogo'/>">
           <span class="ico">🛒</span>
           <h3>Catálogo</h3>
           <p>Gestiona productos y stock mínimo.</p>
         </a>
 
-        <a class="qcard fade-up" style="--d: 0.06s" href="Publicidad.jsp">
+        <a class="qcard fade-up" style="--d: 0.06s" href="<c:url value='/publicidad'/>">
           <span class="ico">📢</span>
           <h3>Publicidad</h3>
           <p>Promociones y banners para tu tienda.</p>
         </a>
 
-        <a class="qcard fade-up" style="--d: 0.12s" href="Catalogo.jsp#novedades">
+        <a class="qcard fade-up" style="--d: 0.12s" href="<c:url value='/catalogo#novedades'/>">
           <span class="ico">🆕</span>
           <h3>Novedades</h3>
           <p>Lo último que llegó a la tienda.</p>
         </a>
 
-        <a class="qcard fade-up" style="--d: 0.18s" href="Contacto.jsp">
+        <a class="qcard fade-up" style="--d: 0.18s" href="<c:url value='/contacto'/>">
           <span class="ico">📞</span>
           <h3>Contacto</h3>
           <p>Canales de atención y ubicación.</p>
@@ -56,7 +54,7 @@
       <section class="highlight fade-up" style="--d: 0.18s">
         <h2>Consejo</h2>
         <p>
-          Activa tus combos (p. ej., “Pack desayuno”) y muestra promociones en la sección Publicidad
+          Activa combos (p. ej., “Pack desayuno”) y muestra promociones en <b>Publicidad</b>
           para aumentar el ticket promedio.
         </p>
       </section>
@@ -68,27 +66,21 @@
           etc.) desde <b>Publicidad</b>.
         </p>
         <div class="hero-actions">
-          <a class="btn primary" href="Publicidad.jsp">Ver Promos</a>
-          <a class="btn ghost" href="Catalogo.jsp#novedades">Ver Novedades</a>
+          <a class="btn primary" href="<c:url value='/publicidad'/>">Ver Promos</a>
+          <a class="btn ghost" href="<c:url value='/catalogo#novedades'/>">Ver Novedades</a>
         </div>
       </section>
     </main>
 
     <footer id="footer">
-      <%-- INSERCIÓN JSP: Asume que Footer.jsp está en /WEB-INF/views/componentes --%> <%@ include
-      file="/componentes/Footer.jsp" %>
+      <%-- Incluye el FOOTER --%> <%@ include file="../componentes/footer.jsp" %>
     </footer>
 
     <script>
-      // **IMPORTANTE:** El JavaScript de fetch fue eliminado.
-
-      // Se mantiene la lógica del menú hamburguesa, ya que depende del HTML
-      // insertado por el JSP include.
+      // Hamburguesa (sigue funcionando con el include del navbar)
       const t = document.querySelector('.menu-toggle'),
         l = document.querySelector('.nav-links')
-      if (t && l) {
-        t.addEventListener('click', () => l.classList.toggle('active'))
-      }
+      if (t && l) t.addEventListener('click', () => l.classList.toggle('active'))
     </script>
   </body>
 </html>

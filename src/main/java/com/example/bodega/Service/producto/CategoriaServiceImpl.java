@@ -32,7 +32,6 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public Categoria obtenerPorId(Integer id) {
-        @SuppressWarnings("null")
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         return categoriaOpt.orElse(null);
     }

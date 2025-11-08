@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -31,11 +32,11 @@
       <nav class="navbar">
         <div class="logo">Sistema de Ventas</div>
         <ul class="nav-links">
-          <li><a class="nav-link" href="Main.html">Inicio</a></li>
-          <li><a class="nav-link" href="Catalogo.html">Catálogo</a></li>
-          <li><a class="nav-link" href="Contacto.html">Contacto</a></li>
-          <li><a class="nav-link" href="Publicidad.html">Publicidad</a></li>
-          <li><a class="btn nav-link" href="Login.html">Login</a></li>
+          <li><a class="nav-link" href="Main.jsp">Inicio</a></li>
+          <li><a class="nav-link" href="Catalogo.jsp">Catálogo</a></li>
+          <li><a class="nav-link" href="Contacto.jsp">Contacto</a></li>
+          <li><a class="nav-link" href="Publicidad.jsp">Publicidad</a></li>
+          <li><a class="btn nav-link" href="Login.jsp">Login</a></li>
         </ul>
         <button class="menu-toggle" aria-label="Menú">☰</button>
       </nav>
@@ -43,13 +44,8 @@
 
     <header class="hero">
       <h1>Contáctanos</h1>
-      <p>
-        ¿Tienes dudas o una propuesta? Escríbenos y te responderemos pronto.
-      </p>
-      <small
-        >* Esta versión usa solo HTML+CSS. El envío abre tu correo
-        (mailto:).</small
-      >
+      <p>¿Tienes dudas o una propuesta? Escríbenos y te responderemos pronto.</p>
+      <small>* Esta versión usa solo HTML+CSS. El envío abre tu correo (mailto:).</small>
     </header>
 
     <main class="wrapper">
@@ -87,13 +83,7 @@
               <label for="nombre">Nombre</label><span class="focus-ring"></span>
             </div>
             <div class="field">
-              <input
-                type="email"
-                id="correo"
-                name="Correo"
-                required
-                placeholder=" "
-              />
+              <input type="email" id="correo" name="Correo" required placeholder=" " />
               <label for="correo">Correo</label><span class="focus-ring"></span>
             </div>
           </div>
@@ -111,32 +101,20 @@
                 pattern="[0-9+\s-]{6,}"
                 placeholder=" "
               />
-              <label for="telefono">Teléfono (opcional)</label
-              ><span class="focus-ring"></span>
+              <label for="telefono">Teléfono (opcional)</label><span class="focus-ring"></span>
             </div>
           </div>
 
           <div class="field textarea">
-            <textarea
-              id="mensaje"
-              name="Mensaje"
-              rows="5"
-              required
-              placeholder=" "
-            ></textarea>
+            <textarea id="mensaje" name="Mensaje" rows="5" required placeholder=" "></textarea>
             <label for="mensaje">Mensaje</label><span class="focus-ring"></span>
           </div>
 
-          <button
-            class="btn primary"
-            type="submit"
-            title="Abrirá tu cliente de correo"
-          >
+          <button class="btn primary" type="submit" title="Abrirá tu cliente de correo">
             Enviar mensaje
           </button>
           <p class="note">
-            * El botón abrirá tu aplicación de correo con el mensaje listo para
-            enviar.
+            * El botón abrirá tu aplicación de correo con el mensaje listo para enviar.
           </p>
         </form>
 
@@ -150,7 +128,6 @@
         </div>
       </section>
     </main>
-
 
     <footer class="footer">
       <div class="footer-content">

@@ -119,7 +119,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
             </label>
 
             <label>
-              <span>Nombre*</span>
+              <span>Nombre</span>
               <input class="in" name="nombre" required />
             </label>
 
@@ -129,7 +129,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
             </label>
 
             <label>
-              <span>Stock*</span>
+              <span>Stock</span>
               <input class="in" name="stockActual" type="number" min="0" required />
             </label>
 
@@ -139,7 +139,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
             </label>
 
             <label>
-              <span>Categoría*</span>
+              <span>Categoría</span>
               <select class="in" name="idCategoria" required>
                 <c:forEach var="cat" items="${categorias}">
                   <option value="${cat.idCategoria}">${cat.nombre}</option>

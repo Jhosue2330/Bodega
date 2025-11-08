@@ -28,7 +28,6 @@ public class ProductoServiceImpl implements ProductoService {
         return repo.findByActivoTrue();
     }
 
-    @SuppressWarnings("null")
     @Override @Transactional(readOnly = true)
     public Producto obtenerPorId(Integer id) {
         return repo.findById(id).orElse(null);
