@@ -9,12 +9,13 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gestión de Productos</title>
     <!-- CSS estático desde /static/css -->
-    <link rel="stylesheet" href="<c:url value='/css/Gestion.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Navbar.css'/>" />
+    <link rel="stylesheet" href="../CSS/Gestion.css" />
+    <link rel="stylesheet" href="../CSS/Navbar.css" />
   </head>
   <body data-page="gestion">
-    <!-- NAVBAR global (fragmento) -->
-    <jsp:include page="/WEB-INF/views/componentes/navbar_bodega.jsp" />
+    <header id="navbar">
+      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+    </header>
 
     <main class="wrap">
       <!-- Mensaje flash -->

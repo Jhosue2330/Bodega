@@ -29,17 +29,7 @@
   <body>
     <!-- Navbar (estático) -->
     <header id="navbar">
-      <nav class="navbar">
-        <div class="logo">Sistema de Ventas</div>
-        <ul class="nav-links">
-          <li><a class="nav-link" href="Main.jsp">Inicio</a></li>
-          <li><a class="nav-link" href="Catalogo.jsp">Catálogo</a></li>
-          <li><a class="nav-link" href="Contacto.jsp">Contacto</a></li>
-          <li><a class="nav-link" href="Publicidad.jsp">Publicidad</a></li>
-          <li><a class="btn nav-link" href="Login.jsp">Login</a></li>
-        </ul>
-        <button class="menu-toggle" aria-label="Menú">☰</button>
-      </nav>
+      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar.jsp" %>
     </header>
 
     <header class="hero">

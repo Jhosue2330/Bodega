@@ -16,7 +16,9 @@
 <body>
 
   <!-- NAVBAR -->
-  <jsp:include page="/WEB-INF/views/componentes/navbar_bodega.jsp"/>
+    <header id="navbar">
+      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+    </header>
 
   <main class="wrap">
     <header class="page-head">

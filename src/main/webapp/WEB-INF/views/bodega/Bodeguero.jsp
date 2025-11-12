@@ -9,37 +9,14 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     <title>Panel del Bodeguero</title>
 
     <!-- CSS desde /static/css -->
-    <link rel="stylesheet" href="<c:url value='/css/Bodeguero.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Navbar.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Footer.css'/>" />
+    <link rel="stylesheet" href="../CSS/Navbar.css" />
+    <link rel="stylesheet" href="../CSS/Bodeguero.css" />
+    <link rel="stylesheet" href="../CSS/Footer.css" />
   </head>
   <body class="bodega-page">
-    <!-- NAVBAR -->
-    <!-- Si tienes el fragmento, usa este include: -->
-    <!-- <jsp:include page="/WEB-INF/views/componentes/navbar_bodega.jsp"/> -->
-
-    <!-- O deja tu navbar tal cual pero con rutas Spring: -->
-    <nav class="navbar sv-navbar">
-      <div class="logo">Sistema · Bodega</div>
-      <ul class="nav-links">
-        <li><a class="nav-link active" href="<c:url value='/bodeguero/dashboard'/>">Bodega</a></li>
-        <li><a class="nav-link" href="<c:url value='/venta/registro'/>">Ventas</a></li>
-        <li><a class="nav-link" href="<c:url value='/delivery/pedidos'/>">Delivery</a></li>
-        <li><a class="nav-link" href="<c:url value='/producto/gestion'/>">Gestión</a></li>
-        <li class="has-sub">
-          <a class="nav-link" href="#">Productos ▾</a>
-          <ul class="sub">
-            <li><a class="nav-link" href="<c:url value='/producto/crear'/>">Crear producto</a></li>
-            <li>
-              <a class="nav-link" href="<c:url value='/producto/gestion'/>">Editar producto</a>
-            </li>
-          </ul>
-        </li>
-        <li><a class="nav-link" href="<c:url value='/metricas'/>">Métricas</a></li>
-        <li><a class="btn nav-link" href="<c:url value='/logout'/>">Salir</a></li>
-      </ul>
-      <button class="menu-toggle" aria-label="Menú">☰</button>
-    </nav>
+    <header id="navbar">
+      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+    </header>
 
     <div class="bodega-wrap">
       <!-- Título + acción principal -->

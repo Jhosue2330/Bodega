@@ -6,23 +6,48 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PagesController {
 
-  // Página inicial pública (Main.jsp)
-  @GetMapping({"/", "/main"})
-  public String home() {
-    return "publico/Main";
-  }
+    @GetMapping({"/", "/main"})
+    public String home() {
+        return "publico/Main"; // Página principal
+    }
 
-  // Páginas públicas
-  @GetMapping("/catalogo")
-  public String catalogo() { return "publico/Catalogo"; }
+    @GetMapping("/catalogo")
+    public String catalogo() {
+        return "publico/Catalogo"; // Página del catálogo
+    }
 
-  @GetMapping("/publicidad")
-  public String publicidad() { return "publico/Publicidad"; }
+    @GetMapping("/publicidad")
+    public String publicidad() {
+        return "publico/Publicidad"; // Página de publicidad
+    }
 
-  @GetMapping("/contacto")
-  public String contacto() { return "publico/Contacto"; }
+    @GetMapping("/contacto")
+    public String contacto() {
+        return "publico/Contacto"; // Página de contacto
+    }
 
-  // Panel del bodeguero (protegido)
-  @GetMapping("/bodeguero")
-  public String bodeguero() { return "bodeguero/Bodeguero"; }
+    @GetMapping("/bodega/bodeguero")
+    public String bodeguero() {
+        return "bodega/Bodeguero"; // Panel principal
+    }
+
+    @GetMapping("/transaccion/venta")
+    public String venta() {
+        return "transaccion/Venta"; // Página de ventas
+    }
+
+    @GetMapping("/transaccion/delivery")
+    public String delivery() {
+        return "transaccion/Delivery"; // Página de pedidos delivery
+    }
+
+    @GetMapping("/gestion")
+    public String gestion() {
+        return "producto/Gestion"; // Página de gestión de productos
+    }
+
+    @GetMapping("/transaccion/metricas")
+    public String metricas() {
+        return "transaccion/Metrica"; // Página de métricas
+    }
 }
