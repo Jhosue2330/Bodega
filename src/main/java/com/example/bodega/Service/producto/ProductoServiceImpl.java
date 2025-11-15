@@ -3,13 +3,11 @@ package com.example.bodega.Service.producto;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bodega.model.producto.Producto;
 import com.example.bodega.repository.producto.ProductoRepository;
 
 @Service
-@Transactional
 public class ProductoServiceImpl implements ProductoService {
 
     private final ProductoRepository repo;
@@ -18,43 +16,56 @@ public class ProductoServiceImpl implements ProductoService {
         this.repo = repo;
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public List<Producto> listarTodos() {
-        return repo.findAll();
+        return repo.listar();
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public List<Producto> listarActivos() {
-        return repo.findByActivoTrue();
+        return repo.listarActivos();
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public Producto obtenerPorId(Integer id) {
-        return repo.findById(id).orElse(null);
+        return repo.obtenerPorId(id);
     }
 
     @Override
     public Producto guardar(Producto p) {
-        // defaults y limpieza básica
+
+        // ================================
+        // Limpieza básica (igual que JPA)
+        // ================================
         if (p.getActivo() == null) p.setActivo(true);
         if (p.getStockMinimo() == null) p.setStockMinimo(0);
         if (p.getNombre() != null) p.setNombre(p.getNombre().trim());
         if (p.getSku() != null) p.setSku(p.getSku().trim());
-        return repo.save(p); // create/update
+
+        // =====================================
+        // Crear o Actualizar según tenga ID
+        // =====================================
+        if (p.getIdProducto() == null) {
+            repo.guardar(p); // INSERT
+        } else {
+            repo.actualizar(p); // UPDATE
+        }
+
+        return p; // Retornamos el objeto actualizado
     }
 
     @Override
     public void eliminarLogico(Integer id) {
-        var p = obtenerPorId(id);
+        Producto p = repo.obtenerPorId(id);
         if (p != null) {
             p.setActivo(false);
-            repo.save(p);
+            repo.actualizar(p); // UPDATE para desactivar
         }
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public boolean existeSku(String sku) {
         if (sku == null) return false;
-        return repo.existsBySkuIgnoreCase(sku.trim());
+        return repo.existeSkuIgnoreCase(sku.trim());
     }
 }

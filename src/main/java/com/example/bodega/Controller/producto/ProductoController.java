@@ -63,7 +63,7 @@ public class ProductoController {
         }
         model.addAttribute("producto", p);
         model.addAttribute("categorias", categoriaService.listarActivas());
-        return "producto/Producto-Editar";
+        return "producto/gestion";
     }
 
     // GUARDAR (create/update) → redirige a tu Gestión
