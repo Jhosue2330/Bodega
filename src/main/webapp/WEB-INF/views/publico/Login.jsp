@@ -35,8 +35,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <label for="usuario">Usuario</label>
           <input
             type="text"
-            id="usuario"
-            name="usuario"
+            id="Correo"
+            name="Correo"
             placeholder="Tu usuario"
             required
             value="${param.usuario != null ? param.usuario : ''}"
