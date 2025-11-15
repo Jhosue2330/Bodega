@@ -1,53 +1,47 @@
 package com.example.bodega.Service.producto;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bodega.model.producto.Categoria;
 import com.example.bodega.repository.producto.CategoriaRepository;
 
 @Service
+@Transactional
 public class CategoriaServiceImpl implements CategoriaService {
 
-    private final CategoriaRepository repo;
+    private final CategoriaRepository categoriaRepository;
 
-    public CategoriaServiceImpl(CategoriaRepository repo) {
-        this.repo = repo;
+    public CategoriaServiceImpl(CategoriaRepository categoriaRepository) {
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Override
     public List<Categoria> listarActivas() {
-        return repo.listarActivas();
+        return categoriaRepository.findByActivoTrue();
     }
 
     @Override
     public Categoria guardar(Categoria categoria) {
-
-        // Default para activo
         if (categoria.getActivo() == null) categoria.setActivo(true);
-
-        // Crear o actualizar según ID
-        if (categoria.getIdCategoria() == null) {
-            repo.guardar(categoria);   // INSERT
-        } else {
-            repo.actualizar(categoria); // UPDATE
-        }
-
-        return categoria;
+        return categoriaRepository.save(categoria);
     }
 
     @Override
     public Categoria obtenerPorId(Integer id) {
-        return repo.obtenerPorId(id);
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+        return categoriaOpt.orElse(null);
     }
 
     @Override
     public void desactivar(Integer id) {
-        Categoria categoria = repo.obtenerPorId(id);
+        Categoria categoria = obtenerPorId(id);
         if (categoria != null) {
             categoria.setActivo(false);
-            repo.actualizar(categoria); // update para desactivar
+            categoriaRepository.save(categoria);
         }
     }
 }

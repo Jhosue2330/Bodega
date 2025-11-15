@@ -71,6 +71,10 @@ INSERT INTO PRODUCTO (nombre, sku, precio, stock_actual, stock_minimo, id_catego
   ('Gaseosa Coca-Cola ','003', 10.00, 45, 15, 2, TRUE),
   ('Six Pack Cerveza Pilsen','004',  35.00, 20,  8, 5, TRUE);
 
+INSERT INTO PRODUCTO (sku, nombre, precio, stock_actual, stock_minimo, activo) VALUES
+('P-0001','Audífonos Pro',89.90,10,1,true),
+('P-0002','Mouse Inalámbrico',49.50,20,2,true),
+('P-0003','Teclado Mecánico',199.00,5,1,true);
 -- (Opcional) Semillas para PROMOCION si quieres probar el módulo:
 -- INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo) VALUES
 --   ('Promo Verano', 'Descuentos en bebidas', DATE '2025-01-01', DATE '2025-02-15', TRUE);
