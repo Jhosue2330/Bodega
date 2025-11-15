@@ -48,6 +48,6 @@ public class PagesController {
 
     @GetMapping("/transaccion/metricas")
     public String metricas() {
-        return "transaccion/Metrica"; // Página de métricas
+        return "transaccion/Metricas"; // Página de métricas
     }
 }

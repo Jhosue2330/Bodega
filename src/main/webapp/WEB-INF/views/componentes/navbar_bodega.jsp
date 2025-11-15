@@ -16,13 +16,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       <a class="nav-link" href="#">Productos ▾</a>
       <ul class="sub">
         <li>
-          <a class="nav-link" href="<c:url value='/producto/producto-crear'/>">Crear producto</a>
+          <a class="nav-link" href="<c:url value='/producto/crear'/>">Crear producto</a>
         </li>
         <li>
-          <a class="nav-link" href="<c:url value='/producto/producto-editar'/>">Editar producto</a>
+          <a class="nav-link" href="<c:url value='/producto/editar'/>">Editar producto</a>
         </li>
       </ul>
-    </li>
+    </li> 
 
     <li><a class="nav-link" href="<c:url value='/transaccion/metricas'/>">Métricas</a></li>
     <li><a class="btn nav-link" href="<c:url value='/logout'/>" id="logoutBtn">Salir</a></li>

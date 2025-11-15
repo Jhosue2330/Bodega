@@ -9,10 +9,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <title>Crear producto — Sistema de Ventas</title>
 
     <!-- Tus estilos (desde /static/css) -->
-    <link rel="stylesheet" href="<c:url value='/css/Main.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Navbar.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Footer.css'/>" />
-    <link rel="stylesheet" href="<c:url value='/css/Producto-Crear.css'/>" />
+    <link rel="stylesheet" href="../CSS/Main.css" />
+    <link rel="stylesheet" href="../CSS/Navbar.css" />
+    <link rel="stylesheet" href="../CSS/Footer.css" />
+    <link rel="stylesheet" href="../CSS/Producto-Crear.css" />
   </head>
   <body>
     <!-- NAVBAR -->

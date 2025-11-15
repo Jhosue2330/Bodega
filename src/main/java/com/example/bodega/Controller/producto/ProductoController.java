@@ -41,6 +41,17 @@ public class ProductoController {
         model.addAttribute("categorias", categoriaService.listarActivas());
         return "producto/Producto-Crear";
     }
+    @GetMapping("/editar")
+    public String editarSinId(Model model) {
+
+        // Producto vacío para que JSP no falle
+        model.addAttribute("producto", new Producto());
+
+        // Categorías disponibles
+        model.addAttribute("categorias", categoriaService.listarActivas());
+
+        return "producto/Producto-Editar";
+    }
 
     // EDITAR (form) → /WEB-INF/views/producto/Producto-Editar.jsp
     @GetMapping("/editar/{id}")

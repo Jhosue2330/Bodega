@@ -234,7 +234,7 @@
         <!-- 1 -->
         <article class="card">
           <figure class="thumb">
-            <img src="../Imagenes/aseo-personal.jpg" alt="Productos de aseo personal" />
+            <img src="../Img/aseo-personal.jpg" alt="Productos de aseo personal" />
             <span class="cat-chip">Aseo Personal</span>
           </figure>
           <div class="body">
@@ -388,7 +388,7 @@
         <!-- 8 -->
         <article class="card">
           <figure class="thumb">
-            <img src="../Imagenes/Electronicos.webp" alt="Electrodoméstico" />
+            <img src="../Img/Electronicos.webp" alt="Electrodoméstico" />
             <span class="cat-chip">Electrónica</span>
           </figure>
           <div class="body">
