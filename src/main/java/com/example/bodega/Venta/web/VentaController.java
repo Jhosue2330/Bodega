@@ -1,8 +1,8 @@
 package com.example.bodega.Venta.web;
 
-import com.example.bodega.Venta.service.VentaService;
 import com.example.bodega.Venta.web.dto.DetalleVentaDto;
 import com.example.bodega.Venta.web.dto.VentaDto;
+import com.example.bodega.Venta.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/ventas")
@@ -28,20 +29,20 @@ public class VentaController {
     @PostMapping("/registrar")
     public String registrarVenta(
             @RequestParam(name = "tipoVenta", required = false) String tipoVenta,
-            @RequestParam(name = "descuento", required = false) Double descuento,
+            @RequestParam(name = "descuento", required = false) BigDecimal descuento,
             @RequestParam(name = "idVendedor", required = false) Integer idVendedor,
             @RequestParam(name = "idCliente", required = false) Integer idCliente,
             @RequestParam(name = "direccionEntrega", required = false) String direccionEntrega,
             @RequestParam(name = "observaciones", required = false) String observaciones,
             @RequestParam(name = "productoIds[]", required = false) Integer[] productoIds,
             @RequestParam(name = "cantidades[]", required = false) Integer[] cantidades,
-            @RequestParam(name = "precios[]", required = false) Double[] precios,
+            @RequestParam(name = "precios[]", required = false) BigDecimal[] precios,
             Model model
     ) {
         VentaDto venta = new VentaDto();
         venta.setFecha(LocalDateTime.now());
         venta.setTipoVenta(tipoVenta != null ? tipoVenta : "POS");
-        venta.setDescuento(descuento != null ? descuento : 0.0);
+        venta.setDescuento(descuento != null ? descuento : BigDecimal.ZERO);
         venta.setIdVendedor(idVendedor != null ? idVendedor : 1);
         venta.setIdCliente(idCliente);
         venta.setDireccionEntrega(direccionEntrega);
@@ -60,19 +61,15 @@ public class VentaController {
                 detalles.add(d);
             }
         }
-
         venta.setDetalles(detalles);
 
-        // delegar al service (lanza excepción si falla; puedes capturar y mostrar mensaje)
-        ventaService.registrarVentaCompleta(venta);
-
-        return "redirect:/transaccion/venta";
-    }
-
-    @GetMapping("/{id}/detalles")
-    public String verDetalles(@PathVariable("id") Integer idVenta, Model model) {
-        model.addAttribute("detalles", ventaService.obtenerDetallesPorVenta(idVenta));
-        model.addAttribute("idVenta", idVenta);
-        return "transaccion/DetallesVenta";
+        try {
+            ventaService.registrarVentaCompleta(venta);
+            return "redirect:/transaccion/venta";
+        } catch (Exception ex) {
+            model.addAttribute("mensaje", ex.getMessage());
+            model.addAttribute("ventas", ventaService.listarVentas());
+            return "transaccion/Venta";
+        }
     }
 }

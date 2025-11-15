@@ -1,6 +1,6 @@
-<%@ page contentType="text/html; charset=UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="fn"
-uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -8,25 +8,20 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel del Bodeguero</title>
 
-    <!-- CSS desde /static/css -->
-    <link rel="stylesheet" href="../CSS/Navbar.css" />
-    <link rel="stylesheet" href="../CSS/Bodeguero.css" />
-    <link rel="stylesheet" href="../CSS/Footer.css" />
+    <link rel="stylesheet" href="<c:url value='/CSS/Navbar.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/CSS/Bodeguero.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/CSS/Footer.css'/>" />
   </head>
   <body class="bodega-page">
     <header id="navbar">
-      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+      <%@ include file="../componentes/navbar_bodega.jsp" %>
     </header>
 
     <div class="bodega-wrap">
-      <!-- Título + acción principal -->
       <div class="bodega-top">
         <div class="bodega-title">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M3 3h18v4H3V3zm2 6h14l-1.2 9.6a2 2 0 0 1-2 1.4H8.2a2 2 0 0 1-2-1.4L5 9z"
-              fill="url(#g)"
-            />
+            <path d="M3 3h18v4H3V3zm2 6h14l-1.2 9.6a2 2 0 0 1-2 1.4H8.2a2 2 0 0 1-2-1.4L5 9z" fill="url(#g)"/>
             <defs>
               <linearGradient id="g" x1="0" y1="0" x2="24" y2="24">
                 <stop stop-color="#5eead4" />
@@ -40,12 +35,10 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
           </div>
         </div>
         <div class="actions">
-          <!-- Deja como placeholder o apunta a tu ruta cuando la tengas -->
-          <a href="#" class="btn">+ Nuevo movimiento (varios productos)</a>
+          <a href="<c:url value='/bodeguero/movimientos/nuevo'/>" class="btn">+ Nuevo movimiento (varios productos)</a>
         </div>
       </div>
 
-      <!-- KPIs (dinámicos si hay productos) -->
       <div class="kpis">
         <div class="card kpi">
           <div class="label">Productos</div>
@@ -80,7 +73,6 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
         </div>
       </div>
 
-      <!-- Tabs -->
       <div class="tabs">
         <span class="tab active">Stock</span>
         <a class="tab" href="<c:url value='/bodeguero/historial'/>">Historial</a>
@@ -88,9 +80,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
         <a class="tab" href="<c:url value='/venta/registro'/>">Ventas</a>
       </div>
 
-      <!-- STOCK -->
       <section class="section active">
-        <!-- Filtros -->
         <div class="tools" id="stock-tools">
           <form method="get" action="<c:url value='/bodeguero/dashboard'/>">
             <input class="input" type="search" name="q" placeholder="Buscar por nombre o SKU..." />
@@ -106,11 +96,20 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
 
         <div class="card" style="margin-bottom: 10px">
           <p class="sub" style="margin: 0">
-            Usa <strong>Entrada rápida</strong>/<strong>Salida rápida</strong> por producto. Si te
-            equivocas, en <em>Acciones</em> tienes <strong>Corregir mov.</strong> o
-            <strong>Anular mov.</strong> (maqueta).
+            Usa <strong>Entrada</strong> / <strong>Salida</strong> por producto. (Los enlaces abren formularios server-side.)
           </p>
         </div>
+
+        <c:if test="${not empty mensaje}">
+          <div class="card" style="background:#e6ffed;border:1px solid #b7f0c6;padding:10px;margin-bottom:12px">
+            <strong>OK:</strong> <c:out value="${mensaje}"/>
+          </div>
+        </c:if>
+        <c:if test="${not empty error}">
+          <div class="card" style="background:#ffecec;border:1px solid #f7c6c6;padding:10px;margin-bottom:12px">
+            <strong>Error:</strong> <c:out value="${error}"/>
+          </div>
+        </c:if>
 
         <div class="table-wrap">
           <table class="table">
@@ -126,9 +125,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
               </tr>
             </thead>
             <tbody>
-              <!-- Dinámico si hay productos -->
               <c:forEach var="p" items="${productos}">
-                <tr>
+                <tr data-id-producto="${p.idProducto}">
                   <td>${p.sku}</td>
                   <td>${p.nombre}</td>
                   <td>
@@ -144,16 +142,12 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                     </span>
                   </td>
                   <td style="text-align: right">
-                    <!-- Placeholders de movimiento -->
-                    <a class="btn tiny" href="#">Entrada rápida</a>
-                    <a class="btn tiny outline" href="#">Salida rápida</a>
-                    <a class="btn tiny light" href="#">Corregir mov.</a>
-                    <a class="btn tiny danger" href="#">Anular mov.</a>
+                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada?id=${p.idProducto}'/>">Entrada</a>
+                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida?id=${p.idProducto}'/>">Salida</a>
                   </td>
                 </tr>
               </c:forEach>
 
-              <!-- Fallback estático si no hay datos -->
               <c:if test="${empty productos}">
                 <tr>
                   <td>P-0001</td>
@@ -163,10 +157,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <td>5</td>
                   <td><span class="status ok">OK</span></td>
                   <td style="text-align: right">
-                    <a class="btn tiny" href="#">Entrada rápida</a>
-                    <a class="btn tiny outline" href="#">Salida rápida</a>
-                    <a class="btn tiny light" href="#">Corregir mov.</a>
-                    <a class="btn tiny danger" href="#">Anular mov.</a>
+                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
+                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
                   </td>
                 </tr>
                 <tr>
@@ -177,10 +169,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <td>10</td>
                   <td><span class="status ok">OK</span></td>
                   <td style="text-align: right">
-                    <a class="btn tiny" href="#">Entrada rápida</a>
-                    <a class="btn tiny outline" href="#">Salida rápida</a>
-                    <a class="btn tiny light" href="#">Corregir mov.</a>
-                    <a class="btn tiny danger" href="#">Anular mov.</a>
+                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
+                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
                   </td>
                 </tr>
                 <tr>
@@ -191,10 +181,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                   <td>6</td>
                   <td><span class="status off">Inactivo</span></td>
                   <td style="text-align: right">
-                    <a class="btn tiny" href="#">Entrada rápida</a>
-                    <a class="btn tiny outline" href="#">Salida rápida</a>
-                    <a class="btn tiny light" href="#">Corregir mov.</a>
-                    <a class="btn tiny danger" href="#">Anular mov.</a>
+                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
+                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
                   </td>
                 </tr>
               </c:if>
@@ -209,8 +197,6 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
       </section>
     </div>
 
-    <!-- FOOTER (si tienes fragmento, inclúyelo) -->
-    <!-- <jsp:include page="/WEB-INF/views/componentes/footer.jsp"/> -->
     <footer class="footer">
       <div class="footer-content">
         <p>© 2025 Sistema de Ventas – Maqueta</p>

@@ -1,119 +1,55 @@
 package com.example.bodega.Venta.web.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class DetalleVentaDto implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     private Integer idDetalleVenta;
     private Integer idProducto;
     private String nombreProducto;
     private Integer cantidad;
-    private Double precioUnitario;
-    private Double subtotal;
+    private BigDecimal precioUnitario;
+    private BigDecimal subtotal;
 
-    public DetalleVentaDto() {
-    }
+    public Integer getIdDetalleVenta() { return idDetalleVenta; }
+    public void setIdDetalleVenta(Integer idDetalleVenta) { this.idDetalleVenta = idDetalleVenta; }
 
-    public DetalleVentaDto(Integer idDetalleVenta, Integer idProducto, String nombreProducto,
-                           Integer cantidad, Double precioUnitario, Double subtotal) {
-        this.idDetalleVenta = idDetalleVenta;
-        this.idProducto = idProducto;
-        this.nombreProducto = nombreProducto;
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-        this.subtotal = subtotal;
-    }
+    public Integer getIdProducto() { return idProducto; }
+    public void setIdProducto(Integer idProducto) { this.idProducto = idProducto; }
 
-    public Integer getIdDetalleVenta() {
-        return idDetalleVenta;
-    }
+    public String getNombreProducto() { return nombreProducto; }
+    public void setNombreProducto(String nombreProducto) { this.nombreProducto = nombreProducto; }
 
-    public void setIdDetalleVenta(Integer idDetalleVenta) {
-        this.idDetalleVenta = idDetalleVenta;
-    }
+    public Integer getCantidad() { return cantidad; }
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; recomputeSubtotalIfPossible(); }
 
-    public Integer getIdProducto() {
-        return idProducto;
-    }
+    public BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public void setPrecioUnitario(BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; recomputeSubtotalIfPossible(); }
 
-    public void setIdProducto(Integer idProducto) {
-        this.idProducto = idProducto;
-    }
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 
-    public String getNombreProducto() {
-        return nombreProducto;
-    }
-
-    public void setNombreProducto(String nombreProducto) {
-        this.nombreProducto = nombreProducto;
-    }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-        recomputeSubtotalIfPossible();
-    }
-
-    public Double getPrecioUnitario() {
-        return precioUnitario;
-    }
-
-    public void setPrecioUnitario(Double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-        recomputeSubtotalIfPossible();
-    }
-
-    public Double getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(Double subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    /**
-     * Calcula el subtotal a partir de cantidad y precioUnitario.
-     * Si alguno es nulo no hace nada.
-     */
     public void recomputeSubtotalIfPossible() {
         if (this.cantidad != null && this.precioUnitario != null) {
-            this.subtotal = this.cantidad * this.precioUnitario;
+            this.subtotal = this.precioUnitario.multiply(new BigDecimal(this.cantidad)).setScale(2, BigDecimal.ROUND_HALF_UP);
         }
     }
 
     @Override
-    public String toString() {
-        return "DetalleVentaDto{" +
-                "idDetalleVenta=" + idDetalleVenta +
-                ", idProducto=" + idProducto +
-                ", nombreProducto='" + nombreProducto + '\'' +
-                ", cantidad=" + cantidad +
-                ", precioUnitario=" + precioUnitario +
-                ", subtotal=" + subtotal +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { /* generated */ 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         DetalleVentaDto that = (DetalleVentaDto) o;
-        return Objects.equals(idDetalleVenta, that.idDetalleVenta)
-                && Objects.equals(idProducto, that.idProducto)
-                && Objects.equals(cantidad, that.cantidad)
-                && Objects.equals(precioUnitario, that.precioUnitario)
-                && Objects.equals(subtotal, that.subtotal);
+        return Objects.equals(idDetalleVenta, that.idDetalleVenta) &&
+                Objects.equals(idProducto, that.idProducto) &&
+                Objects.equals(cantidad, that.cantidad) &&
+                Objects.equals(precioUnitario, that.precioUnitario) &&
+                Objects.equals(subtotal, that.subtotal);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(idDetalleVenta, idProducto, cantidad, precioUnitario, subtotal);
-    }
+    public int hashCode() { return Objects.hash(idDetalleVenta, idProducto, cantidad, precioUnitario, subtotal); }
 }

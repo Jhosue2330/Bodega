@@ -9,11 +9,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@SuppressWarnings("unused")
 @Repository
 public class VentaRepo {
 
@@ -21,20 +20,37 @@ public class VentaRepo {
     private JdbcTemplate jdbc;
 
     public static class ProductSimple {
-        public Integer idProducto;
-        public String nombre;
-        public Double precio;
-        public Integer stockActual;
+        private Integer idProducto;
+        private String nombre;
+        private String sku;
+        private BigDecimal precio;
+        private Integer stockActual;
+
+        public Integer getIdProducto() { return idProducto; }
+        public void setIdProducto(Integer idProducto) { this.idProducto = idProducto; }
+
+        public String getNombre() { return nombre; }
+        public void setNombre(String nombre) { this.nombre = nombre; }
+
+        public String getSku() { return sku; }
+        public void setSku(String sku) { this.sku = sku; }
+
+        public BigDecimal getPrecio() { return precio; }
+        public void setPrecio(BigDecimal precio) { this.precio = precio; }
+
+        public Integer getStockActual() { return stockActual; }
+        public void setStockActual(Integer stockActual) { this.stockActual = stockActual; }
     }
 
     public ProductSimple obtenerProductoSimple(Integer idProducto) {
-        String sql = "SELECT id_producto, nombre, precio, stock_actual FROM PRODUCTO WHERE id_producto = ?";
+        String sql = "SELECT id_producto, nombre, sku, precio, stock_actual FROM PRODUCTO WHERE id_producto = ?";
         List<ProductSimple> list = jdbc.query(sql, (rs, rn) -> {
             ProductSimple p = new ProductSimple();
-            p.idProducto = rs.getInt("id_producto");
-            p.nombre = rs.getString("nombre");
-            p.precio = rs.getDouble("precio");
-            p.stockActual = rs.getInt("stock_actual");
+            p.setIdProducto(rs.getInt("id_producto"));
+            p.setNombre(rs.getString("nombre"));
+            p.setSku(rs.getString("sku"));
+            p.setPrecio(rs.getBigDecimal("precio"));
+            p.setStockActual(rs.getInt("stock_actual"));
             return p;
         }, idProducto);
         return list.isEmpty() ? null : list.get(0);
@@ -45,7 +61,7 @@ public class VentaRepo {
         for (DetalleVentaDto d : detalles) {
             ProductSimple p = obtenerProductoSimple(d.getIdProducto());
             if (p == null) return false;
-            if (p.stockActual < d.getCantidad()) return false;
+            if (p.getStockActual() < d.getCantidad()) return false;
         }
         return true;
     }
@@ -55,11 +71,10 @@ public class VentaRepo {
         KeyHolder kh = new GeneratedKeyHolder();
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            Timestamp ts = Timestamp.valueOf(venta.getFecha());
-            ps.setTimestamp(1, ts);
+            ps.setTimestamp(1, Timestamp.valueOf(venta.getFecha()));
             ps.setString(2, venta.getTipoVenta());
-            ps.setDouble(3, venta.getTotal());
-            ps.setDouble(4, venta.getDescuento() != null ? venta.getDescuento() : 0.0);
+            ps.setBigDecimal(3, venta.getTotal());
+            ps.setBigDecimal(4, venta.getDescuento() != null ? venta.getDescuento() : BigDecimal.ZERO);
             if (venta.getIdVendedor() != null) ps.setInt(5, venta.getIdVendedor()); else ps.setNull(5, Types.INTEGER);
             if (venta.getIdCliente() != null) ps.setInt(6, venta.getIdCliente()); else ps.setNull(6, Types.INTEGER);
             ps.setString(7, venta.getDireccionEntrega());
@@ -72,11 +87,11 @@ public class VentaRepo {
         return key != null ? key.intValue() : -1;
     }
 
-    public void insertarDetalle(int idVenta, DetalleVentaDto detalle) {
+    public void insertarDetalle(int idVenta, DetalleVentaDto d) {
         String sql = "INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)";
-        jdbc.update(sql, idVenta, detalle.getIdProducto(), detalle.getCantidad(), detalle.getPrecioUnitario(), detalle.getSubtotal());
+        jdbc.update(sql, idVenta, d.getIdProducto(), d.getCantidad(), d.getPrecioUnitario(), d.getSubtotal());
         String upd = "UPDATE PRODUCTO SET stock_actual = stock_actual - ? WHERE id_producto = ?";
-        jdbc.update(upd, detalle.getCantidad(), detalle.getIdProducto());
+        jdbc.update(upd, d.getCantidad(), d.getIdProducto());
     }
 
     public List<VentaDto> listarVentasResumen() {
@@ -87,7 +102,7 @@ public class VentaRepo {
             Timestamp ts = rs.getTimestamp("fecha");
             if (ts != null) v.setFecha(ts.toLocalDateTime());
             v.setTipoVenta(rs.getString("tipo_venta"));
-            v.setTotal(rs.getDouble("total"));
+            v.setTotal(rs.getBigDecimal("total"));
             return v;
         });
     }
@@ -101,9 +116,23 @@ public class VentaRepo {
             d.setIdProducto(rs.getInt("id_producto"));
             d.setNombreProducto(rs.getString("nombreProducto"));
             d.setCantidad(rs.getInt("cantidad"));
-            d.setPrecioUnitario(rs.getDouble("precio_unitario"));
-            d.setSubtotal(rs.getDouble("subtotal"));
+            d.setPrecioUnitario(rs.getBigDecimal("precio_unitario"));
+            d.setSubtotal(rs.getBigDecimal("subtotal"));
             return d;
         }, idVenta);
+    }
+
+    public List<ProductSimple> buscarProductos(String q) {
+        String sql = "SELECT id_producto, nombre, sku, precio, stock_actual FROM PRODUCTO WHERE LOWER(nombre) LIKE ? OR LOWER(sku) LIKE ? LIMIT 50";
+        String like = "%" + q.toLowerCase() + "%";
+        return jdbc.query(sql, (rs, rn) -> {
+            ProductSimple p = new ProductSimple();
+            p.setIdProducto(rs.getInt("id_producto"));
+            p.setNombre(rs.getString("nombre"));
+            p.setSku(rs.getString("sku"));
+            p.setPrecio(rs.getBigDecimal("precio"));
+            p.setStockActual(rs.getInt("stock_actual"));
+            return p;
+        }, like, like);
     }
 }
