@@ -30,6 +30,6 @@ public class CategoriaController {
     public String desactivar(@PathVariable Integer id, RedirectAttributes ra) {
         service.desactivar(id);
         ra.addFlashAttribute("mensaje", "Categoría desactivada.");
-        return "redirect:/producto/producto-editar";
+        return "redirect:/producto/gestion";
     }
 }
