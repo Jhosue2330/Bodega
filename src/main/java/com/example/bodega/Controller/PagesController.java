@@ -26,11 +26,6 @@ public class PagesController {
         return "publico/Contacto"; // Página de contacto
     }
 
-    @GetMapping("/bodega/bodeguero")
-    public String bodeguero() {
-        return "bodega/Bodeguero"; // Panel principal
-    }
-
     @GetMapping("/transaccion/venta")
     public String venta() {
         return "transaccion/Venta"; // Página de ventas
