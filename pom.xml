@@ -74,13 +74,6 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
         </dependency>
 
-        <!-- UTILIDADES -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- DEVTOOLS (recarga en caliente) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

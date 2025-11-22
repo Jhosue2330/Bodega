@@ -56,53 +56,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
         <button type="submit" class="btn primary">Ingresar</button>
 
-        <p class="swap">
-          ¿No tienes cuenta?
-          <!-- En esta maqueta solo mostramos el link; si luego quieres registrar, lo conectamos -->
-          <a
-            class="link"
-            href="#"
-            onclick="document.getElementById('form-register').style.display='grid'; document.getElementById('form-login').style.display='none'; return false;"
-          >
-            Regístrate
-          </a>
-        </p>
-      </form>
-
-      <!-- ===== FORMULARIO REGISTRO (maqueta, sin backend aún) ===== -->
-      <form
-        class="panel"
-        id="form-register"
-        style="display: none"
-        autocomplete="off"
-        onsubmit="alert('Registro de demo. Vuelve a iniciar sesión.'); this.style.display='none'; document.getElementById('form-login').style.display='grid'; return false;"
-      >
-        <div class="input-group">
-          <label for="correo">Correo</label>
-          <input type="email" id="correo" placeholder="tucorreo@dominio.com" required />
-        </div>
-
-        <div class="input-group">
-          <label for="usuario-reg">Usuario</label>
-          <input type="text" id="usuario-reg" placeholder="Elige un usuario" required />
-        </div>
-
-        <div class="input-group">
-          <label for="password-reg">Contraseña</label>
-          <input type="password" id="password-reg" placeholder="Crea una contraseña" required />
-        </div>
-
-        <button type="submit" class="btn primary">Crear cuenta</button>
-        <p class="swap">
-          ¿Ya tienes cuenta?
-          <a
-            class="link"
-            href="#"
-            onclick="document.getElementById('form-register').style.display='none'; document.getElementById('form-login').style.display='grid'; return false;"
-          >
-            Inicia sesión
-          </a>
-        </p>
       </form>
     </div>
   </body>
