@@ -2,7 +2,7 @@ package com.example.bodega.inventario.web;
 
 import com.example.bodega.inventario.repo.MovimientoRepo;
 import com.example.bodega.inventario.service.MovimientoService;
-import com.example.bodega.Venta.repo.VentaRepo;
+import com.example.bodega.venta.repository.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ import java.util.List;
 public class BodegueroController {
 
     @Autowired
-    private VentaRepo productoRepo;
+    private VentaRepository productoRepo;
 
     @Autowired
     private MovimientoService movimientoService;
