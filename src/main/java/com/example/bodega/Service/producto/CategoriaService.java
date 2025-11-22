@@ -10,3 +10,4 @@ public interface CategoriaService {
     Categoria obtenerPorId(Integer id);
     void desactivar(Integer id);
 }
+    

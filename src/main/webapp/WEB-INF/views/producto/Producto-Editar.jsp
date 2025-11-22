@@ -9,10 +9,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Editar producto — Sistema de Ventas</title>
 
-  <link rel="stylesheet" href="../CSS/Main.css"/>
-  <link rel="stylesheet" href="../CSS/Navbar.css"/>
-  <link rel="stylesheet" href="../CSS/Footer.css"/>
-  <link rel="stylesheet" href="../CSS/Producto-Editar.css"/>
+  <link rel="stylesheet" href="../../CSS/Main.css"/>
+  <link rel="stylesheet" href="../../CSS/Navbar.css"/>
+  <link rel="stylesheet" href="../../CSS/Footer.css"/>
+  <link rel="stylesheet" href="../../CSS/Producto-Editar.css"/>
 </head>
 <body>
 

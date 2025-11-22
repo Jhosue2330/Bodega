@@ -1,36 +1,35 @@
+// src/main/java/com/example/bodega/Service/producto/ProductoServiceImpl.java
 package com.example.bodega.Service.producto;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bodega.model.producto.Producto;
-import com.example.bodega.repository.producto.ProductoRepository;
+import com.example.bodega.repository.producto.dao.ProductoDao;
 
 @Service
-@Transactional
 public class ProductoServiceImpl implements ProductoService {
 
-    private final ProductoRepository repo;
+    private final ProductoDao productoDao;
 
-    public ProductoServiceImpl(ProductoRepository repo) {
-        this.repo = repo;
+    public ProductoServiceImpl(ProductoDao productoDao) {
+        this.productoDao = productoDao;
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public List<Producto> listarTodos() {
-        return repo.findAll();
+        return productoDao.findAll();
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public List<Producto> listarActivos() {
-        return repo.findByActivoTrue();
+        return productoDao.findByActivoTrue();
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public Producto obtenerPorId(Integer id) {
-        return repo.findById(id).orElse(null);
+        return productoDao.findById(id).orElse(null);
     }
 
     @Override
@@ -40,21 +39,18 @@ public class ProductoServiceImpl implements ProductoService {
         if (p.getStockMinimo() == null) p.setStockMinimo(0);
         if (p.getNombre() != null) p.setNombre(p.getNombre().trim());
         if (p.getSku() != null) p.setSku(p.getSku().trim());
-        return repo.save(p); // create/update
+
+        return productoDao.save(p); // JDBC
     }
 
     @Override
     public void eliminarLogico(Integer id) {
-        var p = obtenerPorId(id);
-        if (p != null) {
-            p.setActivo(false);
-            repo.save(p);
-        }
+        productoDao.deleteLogico(id);
     }
 
-    @Override @Transactional(readOnly = true)
+    @Override
     public boolean existeSku(String sku) {
-        if (sku == null) return false;
-        return repo.existsBySkuIgnoreCase(sku.trim());
+        if (sku == null || sku.trim().isEmpty()) return false;
+        return productoDao.existsBySkuIgnoreCase(sku.trim());
     }
 }

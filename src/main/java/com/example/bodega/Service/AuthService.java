@@ -1,5 +1,5 @@
 // src/main/java/com/example/bodega/service/AuthService.java
-package com.example.bodega.Service;
+/*package com.example.bodega.Service;
 
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -22,3 +22,4 @@ public class AuthService {
     // ⇡ Hoy comparamos texto plano (demo). Luego cambiamos a BCrypt.
   }
 }
+*/

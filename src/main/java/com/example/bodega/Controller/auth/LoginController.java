@@ -1,5 +1,5 @@
 // src/main/java/com/example/bodega/Controller/auth/LoginController.java
-package com.example.bodega.Controller.auth;
+/*package com.example.bodega.Controller.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,4 +51,4 @@ public class LoginController {
     session.invalidate();
     return "redirect:/login";
   }
-}
+}*/

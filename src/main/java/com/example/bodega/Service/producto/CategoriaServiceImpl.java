@@ -1,47 +1,47 @@
 package com.example.bodega.Service.producto;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bodega.model.producto.Categoria;
-import com.example.bodega.repository.producto.CategoriaRepository;
+import com.example.bodega.repository.producto.dao.CategoriaDao;
 
 @Service
-@Transactional
 public class CategoriaServiceImpl implements CategoriaService {
 
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaDao categoriaDao;
 
-    public CategoriaServiceImpl(CategoriaRepository categoriaRepository) {
-        this.categoriaRepository = categoriaRepository;
+    public CategoriaServiceImpl(CategoriaDao categoriaDao) {
+        this.categoriaDao = categoriaDao;
     }
 
     @Override
     public List<Categoria> listarActivas() {
-        return categoriaRepository.findByActivoTrue();
+        // Usa el método que SÍ existe en CategoriaDao
+        return categoriaDao.findByActivoTrue();
     }
 
     @Override
     public Categoria guardar(Categoria categoria) {
-        if (categoria.getActivo() == null) categoria.setActivo(true);
-        return categoriaRepository.save(categoria);
+        if (categoria.getActivo() == null) {
+            categoria.setActivo(true);
+        }
+
+        // Tu DAO tiene un solo método save() que hace insert o update
+        return categoriaDao.save(categoria);
     }
 
     @Override
     public Categoria obtenerPorId(Integer id) {
-        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
-        return categoriaOpt.orElse(null);
+        // findById devuelve Optional<Categoria>, aquí lo conviertes a Categoria
+        return categoriaDao.findById(id)
+                .orElse(null);
     }
 
     @Override
     public void desactivar(Integer id) {
-        Categoria categoria = obtenerPorId(id);
-        if (categoria != null) {
-            categoria.setActivo(false);
-            categoriaRepository.save(categoria);
-        }
+        // Aquí decides: desactivar = deleteById (borrado físico o lógico según tu DAO)
+        categoriaDao.deleteById(id);
     }
 }
