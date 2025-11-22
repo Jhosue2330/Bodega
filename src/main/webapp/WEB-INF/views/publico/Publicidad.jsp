@@ -14,133 +14,104 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       rel="stylesheet"
     />
 
-    <!-- CSS desde /webapp/css o /resources/static/css -->
-    <link rel="stylesheet" href="../CSS/Navbar.css" />
-    <link rel="stylesheet" href="../CSS/Publicidad.css" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="<c:url value='/CSS/Navbar.css'/>" />
+    <link rel="stylesheet" href="<c:url value='/CSS/Publicidad.css'/>" />
   </head>
   <body>
-    <!-- NAVBAR (público) -->
-    <header id="navbar">
-      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar.jsp" %>
-    </header>
-    <!-- Contenido principal -->
+    <!-- NAVBAR -->
+    <header id="navbar"><%@ include file="../componentes/navbar.jsp" %></header>
+
+    <!-- CONTENIDO -->
     <main class="main-content">
+      <!-- HERO -->
       <section class="hero">
         <div class="hero-content">
           <h1>Promociones<br />del Mes</h1>
-          <p class="subtitle">Ofertas seleccionadas con precisión para tu negocio.</p>
+          <p class="subtitle">
+            Ofertas seleccionadas con precisión para tu negocio, actualizadas desde el sistema del
+            bodeguero.
+          </p>
         </div>
       </section>
 
+      <!-- DESTACADAS (máx. 3 promos activas) -->
       <section class="featured-grid">
-        <div class="feature-card">
-          <img
-            src="<c:url value='/Imagenes/Aseo-Personal.jpg'/>"
-            alt="Productos de aseo personal en oferta"
-            loading="lazy"
-          />
-          <div class="card-content">
-            <span class="badge">-25%</span>
-            <h2>Aseo Personal</h2>
-            <p>Lo esencial para el cuidado diario, al mejor precio.</p>
-          </div>
-        </div>
+        <c:if test="${not empty promos}">
+          <c:forEach var="p" items="${promos}" varStatus="st">
+            <c:if test="${st.index lt 3}">
+              <div class="feature-card">
+                <!-- Imagen por defecto -->
+                <img
+                  src="<c:url value='/Imagenes/promo-default.jpg'/>"
+                  alt="Promoción"
+                  class="promo-img"
+                />
 
-        <div class="feature-card">
-          <img
-            src="<c:url value='/Imagenes/Gaseosa.jpg'/>"
-            alt="Gaseosas en variedad de sabores"
-            loading="lazy"
-          />
-          <div class="card-content">
-            <span class="badge">Oferta</span>
-            <h2>Gaseosas</h2>
-            <p>Refresca tu inventario con nuestras gaseosas favoritas.</p>
-          </div>
-        </div>
+                <div class="card-content">
+                  <span class="badge">Activa</span>
+                  <h2><c:out value="${p.titulo}" /></h2>
+                  <p><c:out value="${p.descripcion}" /></p>
+                  <p class="promo-dates">
+                    <small>
+                      Vigencia:
+                      <c:out value="${p.fechaInicio}" /> -
+                      <c:out value="${p.fechaFin}" />
+                    </small>
+                  </p>
+                </div>
+              </div>
+            </c:if>
+          </c:forEach>
+        </c:if>
 
-        <div class="feature-card">
-          <!-- renombra el archivo a 'utiles-escolares.jpg' -->
-          <img
-            src="<c:url value='/Imagenes/utiles-escolares.jpg'/>"
-            alt="Útiles escolares de calidad"
-            loading="lazy"
-          />
-          <div class="card-content">
-            <span class="badge">Escolar</span>
-            <h2>Útiles Escolares</h2>
-            <p>Todo lo necesario para el regreso a clases.</p>
-          </div>
-        </div>
+        <c:if test="${empty promos}">
+          <p class="no-promos">No hay promociones activas por el momento.</p>
+        </c:if>
       </section>
 
+      <!-- CATÁLOGO COMPLETO -->
       <section class="catalog-section">
         <h2 class="section-title">Catálogo de Promociones</h2>
+
         <div class="product-grid">
-          <article class="product-item">
-            <img
-              src="<c:url value='/Imagenes/Electronicos.webp'/>"
-              alt="Electrónicos en promoción"
-              loading="lazy"
-            />
-            <h3>Electrónicos</h3>
-            <p>Tecnología para tu negocio.</p>
-          </article>
-          <article class="product-item">
-            <img
-              src="<c:url value='/Imagenes/Bebidas.jpg'/>"
-              alt="Bebidas alcohólicas seleccionadas"
-              loading="lazy"
-            />
-            <h3>Bebidas</h3>
-            <p>Variedad para todo tipo de cliente.</p>
-          </article>
-          <article class="product-item">
-            <img src="<c:url value='/Imagenes/Dulces.png'/>" alt="Dulces surtidos" loading="lazy" />
-            <h3>Dulces</h3>
-            <p>Los favoritos de tus consumidores.</p>
-          </article>
-          <article class="product-item">
-            <img
-              src="<c:url value='/Imagenes/Recargas.jpg'/>"
-              alt="Recargas de celular"
-              loading="lazy"
-            />
-            <h3>Recargas</h3>
-            <p>Todas las operadoras, sin complicaciones.</p>
-          </article>
-          <article class="product-item">
-            <img
-              src="<c:url value='/Imagenes/Pelota.webp'/>"
-              alt="Artículos deportivos"
-              loading="lazy"
-            />
-            <h3>Deportivos</h3>
-            <p>Equipamiento para entusiastas.</p>
-          </article>
-          <article class="product-item">
-            <img
-              src="<c:url value='/Imagenes/Regalos.jpg'/>"
-              alt="Ideas de regalo"
-              loading="lazy"
-            />
-            <h3>Regalos</h3>
-            <p>Detalles que generan fidelidad.</p>
-          </article>
+          <c:forEach var="p" items="${promos}">
+            <article class="product-item">
+              <!-- Imagen genérica de catálogo -->
+              <img
+                src="<c:url value='/Imagenes/promo-default.jpg'/>"
+                alt="Promoción"
+                class="promo-img-small"
+              />
+
+              <h3><c:out value="${p.titulo}" /></h3>
+              <p><c:out value="${p.descripcion}" /></p>
+              <p class="promo-dates">
+                <small>
+                  Vigencia:
+                  <c:out value="${p.fechaInicio}" /> -
+                  <c:out value="${p.fechaFin}" />
+                </small>
+              </p>
+            </article>
+          </c:forEach>
+
+          <c:if test="${empty promos}">
+            <p style="grid-column: 1/-1; text-align: center; opacity: 0.8">
+              No hay promociones registradas.
+            </p>
+          </c:if>
         </div>
       </section>
 
+      <!-- MARCAS -->
       <section class="brands">
         <p class="brands-label">Marcas destacadas este mes</p>
         <div class="brand-logos">
-          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=EKU" alt="EKU" />
-          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=BYTE" alt="BYTE" />
-          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=PRO" alt="PRO" />
-          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=SHOP" alt="SHOP" />
-          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=EKU" alt="EKU" />
-          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=BYTE" alt="BYTE" />
-          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=PRO" alt="PRO" />
-          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=SHOP" alt="SHOP" />
+          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=EKU" />
+          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=BYTE" />
+          <img src="https://dummyimage.com/140x50/1fccd2/0f172a&text=PRO" />
+          <img src="https://dummyimage.com/140x50/22d3ee/0f172a&text=SHOP" />
         </div>
       </section>
     </main>

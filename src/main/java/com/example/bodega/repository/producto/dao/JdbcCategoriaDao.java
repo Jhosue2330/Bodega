@@ -1,14 +1,13 @@
 package com.example.bodega.repository.producto.dao;
 
-import com.example.bodega.model.producto.Categoria;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import com.example.bodega.model.producto.Categoria;
 
 @Repository
 public class JdbcCategoriaDao implements CategoriaDao {
@@ -36,7 +35,7 @@ public class JdbcCategoriaDao implements CategoriaDao {
 
     @Override
     public List<Categoria> findByActivoTrue() {
-        String sql = "SELECT id_categoria, nombre, descripcion, activo FROM CATEGORIA WHERE activo = true";
+        String sql = "SELECT id_categoria, nombre, descripcion, activo FROM CATEGORIA WHERE activo = TRUE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -50,20 +49,28 @@ public class JdbcCategoriaDao implements CategoriaDao {
     @Override
     public Categoria save(Categoria categoria) {
         if (categoria.getIdCategoria() == null) {
-            // Create
+            // INSERT
             String sql = "INSERT INTO CATEGORIA (nombre, descripcion, activo) VALUES (?, ?, ?)";
-            jdbcTemplate.update(sql, categoria.getNombre(), categoria.getDescripcion(), categoria.getActivo());
+            jdbcTemplate.update(sql,
+                    categoria.getNombre(),
+                    categoria.getDescripcion(),
+                    categoria.getActivo());
         } else {
-            // Update
+            // UPDATE
             String sql = "UPDATE CATEGORIA SET nombre = ?, descripcion = ?, activo = ? WHERE id_categoria = ?";
-            jdbcTemplate.update(sql, categoria.getNombre(), categoria.getDescripcion(), categoria.getActivo(), categoria.getIdCategoria());
+            jdbcTemplate.update(sql,
+                    categoria.getNombre(),
+                    categoria.getDescripcion(),
+                    categoria.getActivo(),
+                    categoria.getIdCategoria());
         }
         return categoria;
     }
 
     @Override
     public void deleteById(int id) {
-        String sql = "DELETE FROM CATEGORIA WHERE id_categoria = ?";
+        // Borrado lógico
+        String sql = "UPDATE CATEGORIA SET activo = FALSE WHERE id_categoria = ?";
         jdbcTemplate.update(sql, id);
     }
 }

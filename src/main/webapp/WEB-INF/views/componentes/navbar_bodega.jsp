@@ -10,6 +10,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <li><a class="nav-link" href="<c:url value='/transaccion/venta'/>">Venta</a></li>
     <li><a class="nav-link" href="<c:url value='/transaccion/delivery'/>">Delivery</a></li>
     <li><a class="nav-link" href="<c:url value='/producto/gestion'/>">Gestión</a></li>
+    <li><a class="nav-link" href="<c:url value='/bodega/promociones'/>">Promoción</a></li>
 
     <!-- Submenú -->
     <li class="has-sub">
@@ -22,7 +23,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <a class="nav-link" href="<c:url value='/producto/editar'/>">Editar producto</a>
         </li>
       </ul>
-    </li> 
+    </li>
 
     <li><a class="nav-link" href="<c:url value='/transaccion/metricas'/>">Métricas</a></li>
     <li><a class="btn nav-link" href="<c:url value='/logout'/>" id="logoutBtn">Salir</a></li>

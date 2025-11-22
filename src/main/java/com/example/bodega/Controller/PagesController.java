@@ -16,10 +16,10 @@ public class PagesController {
         return "publico/Catalogo"; // Página del catálogo
     }
 
-    @GetMapping("/publicidad")
+   /*/ @GetMapping("/publicidad")
     public String publicidad() {
         return "publico/Publicidad"; // Página de publicidad
-    }
+    }*/
 
     @GetMapping("/contacto")
     public String contacto() {
@@ -49,5 +49,10 @@ public class PagesController {
     @GetMapping("/transaccion/metricas")
     public String metricas() {
         return "transaccion/Metricas"; // Página de métricas
+    }
+
+    @GetMapping("/promocion/promociones")
+    public String promocion() {
+        return "promocion/promociones"; // Página de promocion
     }
 }

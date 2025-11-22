@@ -1,0 +1,361 @@
+/* ===========================
+   1) DESIGN TOKENS (PALETA)
+   =========================== */
+:root {
+  /* Fondo general y paneles */
+  --bg: #0f172a;
+  --panel: #0f1a2c;
+  --line: #1f2a3a;
+
+  /* Texto */
+  --txt: #e6edf5;
+  --mut: #9aa3ad;
+
+  /* Acentos */
+  --acc: #22d3ee; /* teal principal */
+  --acc2: #06b6d4; /* teal brillante */
+
+  /* Estados */
+  --ok: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+
+  /* Sombras y bordes “glass” */
+  --sh: 0 10px 24px rgba(0, 0, 0, 0.35);
+  --surface: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  --border: rgba(255, 255, 255, 0.09);
+  --radius: 16px;
+  --shadow: var(--sh);
+
+  /* Alias para compatibilidad con otros CSS tuyos */
+  --text: var(--txt);
+  --muted: var(--mut);
+  --primary: var(--acc);
+  --primary-2: var(--acc2);
+}
+/* Encabezado superior con el fondo custom */
+
+/* ===========================
+   2) RESET BÁSICO LOCAL
+   =========================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1000px 520px at 8% -10%, rgba(34, 211, 238, 0.1), transparent),
+    var(--bg);
+  color: var(--txt);
+}
+
+/* ===========================
+   3) LAYOUT GENERAL
+   =========================== */
+
+.main-content {
+  padding: 24px 0 32px;
+}
+
+.wrapper {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+/* Layout de dos columnas: formulario + tabla */
+.crud-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+  .crud-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+h1 {
+  font-size: clamp(1.6rem, 2.3vw, 2.1rem);
+  margin-bottom: 4px;
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ===========================
+   4) PANELS / CARDS
+   =========================== */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* FORM */
+.card-form {
+  padding: 20px 20px 18px;
+  animation: fadeUp 0.5s ease-out both;
+}
+
+/* TABLA */
+.card-table {
+  padding: 20px 20px 18px;
+  animation: fadeUp 0.6s ease-out both;
+}
+
+/* ===========================
+   5) FORMULARIO
+   =========================== */
+
+.card-form h2 {
+  margin: 0 0 6px 0;
+}
+
+.card-form p {
+  margin: 0 0 14px 0;
+  color: var(--muted);
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+/* Inputs generales */
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 9px 10px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+/* Hover / focus */
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover {
+  border-color: rgba(148, 163, 184, 0.7);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.4);
+  background: #020617;
+}
+
+/* Layout fechas */
+.date-row {
+  display: flex;
+  gap: 12px;
+}
+
+.date-row > div {
+  flex: 1;
+}
+
+/* Check activo */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 18px;
+  font-size: 0.95rem;
+}
+
+.form-check input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--acc);
+}
+
+/* Botones principales del form (reusan estilo global .btn si ya lo tienes) */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Si no tienes .btn definida en otro CSS, descomenta esto
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.btn:active {
+  transform: translateY(0);
+}
+.btn.primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #05202a;
+  box-shadow: 0 0 18px rgba(34,211,238,0.35), 0 12px 30px rgba(15,23,42,0.7);
+}
+.btn.ghost {
+  background: rgba(15,23,42,.9);
+  color: var(--text);
+  border: 1px solid rgba(148,163,184,.6);
+}
+*/
+
+/* ===========================
+   6) TABLA DE LISTADO
+   =========================== */
+
+.card-table h2 {
+  margin: 0 0 6px 0;
+}
+
+.card-table p {
+  margin: 0 0 12px 0;
+  color: var(--muted);
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+/* Tabla */
+.table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table-custom thead tr {
+  background: #020617;
+}
+
+.table-custom th,
+.table-custom td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table-custom th {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.table-custom tbody tr:hover {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+/* Estados */
+.status-activa {
+  color: var(--ok);
+  font-weight: 500;
+}
+
+.status-inactiva {
+  color: var(--muted);
+}
+
+/* ===========================
+   7) BOTONES DENTRO DE LA TABLA
+   =========================== */
+
+.btn-mini {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-mini + .btn-mini {
+  margin-left: 4px;
+}
+
+.btn-mini:hover {
+  transform: translateY(-1px);
+}
+
+/* Editar */
+.btn-edit {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  color: var(--text);
+}
+
+/* Desactivar */
+.btn-delete {
+  background: linear-gradient(135deg, var(--danger), #b91c1c);
+  color: #fff;
+}
+
+/* Activar */
+.btn-activate {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #05202a;
+}
+
+/* ===========================
+   8) BLOQUE INFORMATIVO
+   =========================== */
+
+.highlight-info {
+  background: #020617dd;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  margin-top: 18px;
+  animation: fadeUp 0.7s ease-out both;
+}
+
+/* ===========================
+   9) ANIMACIONES
+   =========================== */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
