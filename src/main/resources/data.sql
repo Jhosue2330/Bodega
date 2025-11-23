@@ -80,3 +80,14 @@ INSERT INTO PRODUCTO (sku, nombre, precio, stock_actual, stock_minimo, activo) V
 --   ('Promo Verano', 'Descuentos en bebidas', DATE '2025-01-01', DATE '2025-02-15', TRUE);
 -- INSERT INTO PROMOCION_PRODUCTO (id_promocion, id_producto, descuento_pct) VALUES
 --   (1, 3, 10.00);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES 
+('2x1 en gaseosas', 'Solo hasta fin de mes', '2025-02-01', '2025-02-28', TRUE);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES 
+('Descuento del 15% en limpieza', 'Promoción válida para productos de aseo', '2025-02-01', '2025-02-20', TRUE);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES ('2x1 en gaseosas', 'Solo hasta fin de mes', '2025-02-01', '2025-02-28', TRUE);
