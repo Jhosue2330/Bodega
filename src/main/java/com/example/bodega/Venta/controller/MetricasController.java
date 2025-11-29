@@ -19,10 +19,14 @@ public class MetricasController {
     public String verMetricas(Model model) {
         MetricasDto metricas = metricasService.obtenerMetricas();
         
-        // --- DEBUG: MIRA ESTO EN LA CONSOLA ---
-        System.out.println("DEBUG DATOS DIAS: " + metricas.getDiasData());
-        System.out.println("DEBUG DATOS LABELS: " + metricas.getDiasLabels());
-        // --------------------------------------
+        // --- AGREGA ESTO ---
+        System.out.println("================ DEBUG METRICAS ================");
+        System.out.println("Pedidos Hoy: " + metricas.getPedidosHoy());
+        System.out.println("Total Mes: " + metricas.getVentasTotalMes());
+        System.out.println("Data Dias: " + metricas.getDiasData());
+        System.out.println("Data Prod: " + metricas.getTopProductosData());
+        System.out.println("================================================");
+        // -------------------
 
         model.addAttribute("m", metricas);
         return "transaccion/Metricas";
