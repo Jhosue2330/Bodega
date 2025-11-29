@@ -8,7 +8,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <ul class="nav-links">
     <li><a class="nav-link" href="<c:url value='/bodeguero/dashboard'/>">Bodega</a></li>
     <li><a class="nav-link" href="<c:url value='/ventas'/>">Venta</a></li>
-    <li><a class="nav-link" href="<c:url value='/transaccion/delivery'/>">Delivery</a></li>
+    <li><a class="nav-link" href="<c:url value='/delivery'/>">Delivery</a></li>
     <li><a class="nav-link" href="<c:url value='/producto/gestion'/>">Gestión</a></li>
     <li><a class="nav-link" href="<c:url value='/bodega/promociones'/>">Promoción</a></li>
 

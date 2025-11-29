@@ -97,4 +97,42 @@ public class VentaRepository {
         String param = "%" + (query != null ? query : "") + "%";
         return jdbcTemplate.queryForList(sql, param, param);
     }
+
+    @Transactional
+    public void registrarVentaCompleta(
+        Integer idVendedor, String tipoVenta, List<Integer> productoIds, 
+        List<Integer> cantidades, List<Double> precios, 
+        Double descuento, Double total,
+        String cliente, String direccion, String telefono
+    ) {
+        // Estado: Si es POS -> 1 (REGISTRADA), Si es DELIVERY -> 3 (PENDIENTE/EN CAMINO)
+        int idEstado = tipoVenta.equals("DELIVERY") ? 3 : 1; 
+        
+        // Juntamos telefono y cliente en "observaciones" para no crear mil columnas, 
+        // o úsalo en las columnas si ya las creaste en tu tabla VENTA.
+        String obs = "";
+        if(cliente != null) obs += "Cliente: " + cliente + ". ";
+        if(telefono != null) obs += "Tel: " + telefono;
+
+        // INSERT VENTA
+        String sqlVenta = "INSERT INTO VENTA (fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta, direccion_entrega, observaciones) " +
+                          "VALUES (CURRENT_TIMESTAMP(), ?, ?, ?, ?, ?, ?, ?)";
+        
+        jdbcTemplate.update(sqlVenta, tipoVenta, total, descuento != null ? descuento : 0.0, idVendedor, idEstado, direccion, obs);
+
+        // ... (El resto del código de insertar detalles y actualizar stock es igual al anterior) ...
+        // Recuperar ID, Insertar Detalles, Update Stock, Insertar Kardex...
+        // (Copia la lógica del insert detalles que ya tenías aquí abajo)
+        
+        // 2. Obtener ID
+        Integer idVenta = jdbcTemplate.queryForObject("SELECT MAX(id_venta) FROM VENTA WHERE id_vendedor = ?", Integer.class, idVendedor);
+
+        // 3. Detalles y Stock (Igual que antes)
+        String sqlDetalle = "INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)";
+        for (int i = 0; i < productoIds.size(); i++) {
+             // ... tu lógica de bucle ...
+             jdbcTemplate.update(sqlDetalle, idVenta, productoIds.get(i), cantidades.get(i), precios.get(i), cantidades.get(i)*precios.get(i));
+             jdbcTemplate.update("UPDATE PRODUCTO SET stock_actual = stock_actual - ? WHERE id_producto = ?", cantidades.get(i), productoIds.get(i));
+        }
+    }
 }

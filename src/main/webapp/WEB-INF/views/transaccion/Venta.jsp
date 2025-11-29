@@ -101,9 +101,20 @@
         </div>
 
         <form action="<c:url value='/ventas/registrar'/>" method="post">
-          <input type="hidden" name="idVendedor" value="1" /> <div class="actions r">
-            <button type="submit" class="btn pri" ${empty sessionScope.ventaActual.detalles ? 'disabled' : ''}>Registrar venta</button>
-            <a href="<c:url value='/ventas/imprimir-ultimo'/>" target="_blank" class="btn outline">Imprimir Último</a>
+          <input type="hidden" name="idVendedor" value="1" />
+          
+          <div style="background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 15px;">
+            <p style="margin: 0 0 5px 0; font-weight: bold; color: #475569; font-size: 0.9em;">🛵 Datos Delivery (Opcional)</p>
+            
+            <input class="in" name="nombreCliente" placeholder="Nombre Cliente" style="margin-bottom: 5px; font-size: 0.9em; padding: 5px;" />
+            <input class="in" name="direccion" placeholder="Dirección Exacta" style="margin-bottom: 5px; font-size: 0.9em; padding: 5px;" />
+            <input class="in" name="telefono" placeholder="Teléfono / WhatsApp" style="font-size: 0.9em; padding: 5px;" />
+          </div>
+
+          <div class="actions r">
+            <button type="submit" class="btn pri" ${empty sessionScope.ventaActual.detalles ? 'disabled' : ''}>
+                ✅ Registrar Venta / Pedido
+            </button>
           </div>
         </form>
       </aside>

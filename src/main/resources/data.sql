@@ -22,8 +22,14 @@ INSERT INTO USUARIO (id_usuario, nombre_completo, correo, hash_password, telefon
 -- =======================================================
 -- 2) ESTADOS Y CATEGORÍAS (IMPORTANTE: IDs EXPLICITOS)
 -- =======================================================
-INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (1, 'REGISTRADA');
-
+-- =======================================================
+-- ESTADOS DE VENTA (Corrección del error FK)
+-- =======================================================
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (1, 'REGISTRADA'); -- Para Venta Normal
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (2, 'PENDIENTE');
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (3, 'EN CAMINO'); -- Para Delivery (ESTE ES EL QUE FALTA)
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (4, 'ENTREGADO');
+INSERT INTO ESTADO_VENTA (id_estado, nombre) VALUES (5, 'CANCELADO');
 -- Aquí forzamos el ID para que coincida con tus productos
 INSERT INTO CATEGORIA (id_categoria, nombre, descripcion, activo) VALUES 
 (1, 'Abarrotes', 'Arroz, Azucar, Aceite', TRUE),
@@ -87,3 +93,22 @@ VALUES
 
 INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
 VALUES ('2x1 en gaseosas', 'Solo hasta fin de mes', '2025-02-01', '2030-02-28', TRUE);
+
+-- =======================================================
+-- DATOS DE PRUEBA PARA DELIVERY (Para que la pantalla no salga vacía)
+-- =======================================================
+
+-- 1. Un pedido PENDIENTE (Recién hecho)
+INSERT INTO VENTA (fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta, direccion_entrega, observaciones) 
+VALUES (CURRENT_TIMESTAMP(), 'DELIVERY', 85.50, 0, 1, 2, 'Av. Arequipa 123 - Lince', 'Cliente: Juan Pérez | Tel: 999111222');
+
+-- 2. Un pedido EN CAMINO (El motorizado ya salió)
+INSERT INTO VENTA (fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta, direccion_entrega, observaciones) 
+VALUES (DATEADD('MINUTE', -30, CURRENT_TIMESTAMP()), 'DELIVERY', 42.00, 0, 1, 3, 'Jr. De la Unión 500 - Cercado', 'Cliente: Maria Lopez | Tel: 988777666');
+
+-- 3. Un pedido ENTREGADO (Historial)
+INSERT INTO VENTA (fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta, direccion_entrega, observaciones) 
+VALUES (DATEADD('HOUR', -2, CURRENT_TIMESTAMP()), 'DELIVERY', 120.00, 5.00, 1, 4, 'Calle Las Begonias 450 - San Isidro', 'Cliente: Carlos Ruiz | Tel: 955444333');
+
+-- Ajustar secuencia para que no de error al crear nuevos
+ALTER TABLE VENTA ALTER COLUMN id_venta RESTART WITH 100;

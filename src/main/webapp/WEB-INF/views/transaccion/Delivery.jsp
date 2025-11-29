@@ -1,363 +1,151 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Delivery – Bodega Josdin</title>
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Delivery — Bodega</title>
+  <link rel="stylesheet" href="<c:url value='/CSS/Main.css'/>">
+  <link rel="stylesheet" href="<c:url value='/CSS/Navbar.css'/>">
+  <style>
+    /* Estilos propios de Delivery */
+    .delivery-page { background: #f1f5f9; min-height: 100vh; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85em; text-transform: uppercase; }
+    
+    /* Colores de Estado */
+    .st-2 { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; } /* Pendiente */
+    .st-3 { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; } /* En Camino */
+    .st-4 { background: #dcfce7; color: #166534; border: 1px solid #86efac; } /* Entregado */
+    .st-5 { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; text-decoration: line-through; } /* Cancelado */
 
-    <!-- ================== Hojas de estilo globales ==================
-       - Navbar.css: estilos del menú superior
-       - Footer.css: estilos del pie de página
-       - Delivery.css: estilos específicos de esta pantalla (formulario, ítems, etc.)
-  -->
-    <link rel="stylesheet" href="../CSS/Navbar.css" />
-    <link rel="stylesheet" href="../CSS/Footer.css" />
-    <link rel="stylesheet" href="../CSS/Delivery.css" />
+    .delivery-card { 
+        background: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; 
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;
+        border-left: 5px solid transparent;
+    }
+    .delivery-card.st-2 { border-left-color: #eab308; }
+    .delivery-card.st-3 { border-left-color: #3b82f6; }
+    .delivery-card.st-4 { border-left-color: #22c55e; }
+    .delivery-card.st-5 { border-left-color: #ef4444; opacity: 0.7; }
 
-    <!-- ============= Fallback mínimo del navbar (opcional) =============
-       Este bloque solo ayuda si por alguna razón no carga Navbar.css.
-       No interfiere si el archivo externo se carga correctamente. -->
-    <style>
-      .sv-navbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 16px;
-        border-bottom: 1px solid rgba(31, 41, 55, 0.6);
-        background: #0b1220;
-      }
-      .sv-navbar .logo {
-        font-weight: 800;
-        color: #e2e8f0;
-      }
-      .sv-navbar .nav-links {
-        list-style: none;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-      }
-      .sv-navbar .nav-link {
-        display: inline-block;
-        padding: 8px 10px;
-        border-radius: 10px;
-        color: #e2e8f0;
-        text-decoration: none;
-      }
-      .sv-navbar .nav-link:hover {
-        background: #111827;
-      }
-      .sv-navbar .btn {
-        background: linear-gradient(135deg, #22d3ee, #06b6d4);
-        color: #05202a;
-        font-weight: 800;
-      }
-      .sv-navbar .has-sub {
-        position: relative;
-      }
-      .sv-navbar .has-sub > .sub {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        min-width: 220px;
-        display: none;
-        background: #0f172a;
-        border: 1px solid rgba(51, 65, 85, 0.5);
-        border-radius: 12px;
-        padding: 6px;
-        margin-top: 6px;
-        z-index: 10;
-      }
-      .sv-navbar .has-sub:hover > .sub {
-        display: block;
-      }
-      .sv-navbar .sub li {
-        list-style: none;
-      }
-      .sv-navbar .sub .nav-link {
-        display: block;
-        padding: 10px 12px;
-        border-radius: 8px;
-      }
-      .sv-navbar .menu-toggle {
-        display: none;
-      }
-    </style>
-  </head>
+    .del-header h3 { margin: 0; font-size: 1.1em; color: #1e293b; display: flex; align-items: center; gap: 10px; }
+    .del-details { margin-top: 10px; color: #475569; font-size: 0.95em; line-height: 1.6; }
+    .del-details strong { color: #334155; }
+    
+    .del-actions { display: flex; flex-direction: column; gap: 8px; min-width: 140px; }
 
-  <body>
-    <!-- ================= NAVBAR =================
-       Navegación principal del sistema. Incluye submenú de Productos
-       y botón de salida a Main.html. -->
-    <header id="navbar">
-      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
-    </header>
+    /* Modal simple con CSS */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; }
+    .modal:target { display: flex; }
+    .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; position: relative; }
+    .close-modal { position: absolute; top: 10px; right: 15px; text-decoration: none; font-size: 20px; font-weight: bold; color: #666; }
+  </style>
+</head>
+<body class="delivery-page">
 
-    <!-- ================= HERO =================
-       Encabezado visual de la sección Delivery. -->
-    <header class="hero">
-      <h1>Registro de Delivery</h1>
-    </header>
+  <header id="navbar">
+      <%@ include file="../componentes/navbar_bodega.jsp" %>
+  </header>
 
-    <!-- ========== ENCABEZADO RESUMEN DEL PEDIDO ==========
-       Bloque informativo (no funcional) para imprimir en el comprobante.
-       - Fecha: puedes actualizarla manualmente o con un backend.
-       - N° Pedido: correlativo manual o desde backend si lo conectas. -->
-    <section class="card-lite" style="text-align: center; margin: 20px auto; max-width: 600px">
-      <p style="font-size: 1.05rem; color: #e2e8f0">
-        <strong>Fecha:</strong>
-        <!-- Etiqueta <time> semántica: útil si luego lo procesa un backend -->
-        <time datetime="2025-10-10" id="fecha-hoy">10/10/2025</time>
-        &nbsp;·&nbsp;
-        <strong>N° Pedido:</strong> <span>0001</span>
-      </p>
+  <main class="wrap" style="max-width: 900px; margin: 20px auto;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h2 style="margin:0; color:#0f172a;">🛵 Despacho de Pedidos</h2>
+            <p style="margin:5px 0 0; color:#64748b;">Gestiona el flujo de entregas.</p>
+        </div>
+        <a href="<c:url value='/ventas'/>" class="btn pri">➕ Nuevo Pedido</a>
+    </div>
+
+    <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+        <a href="?filtro=PENDIENTES" class="btn ${filtroActual == 'PENDIENTES' ? 'pri' : 'ghost'}">⏳ Por Atender</a>
+        <a href="?filtro=TODOS" class="btn ${filtroActual == 'TODOS' ? 'pri' : 'ghost'}">🗂️ Historial Completo</a>
+    </div>
+
+    <c:if test="${not empty mensaje}"><div class="sv-alert success" style="margin-bottom:15px;">${mensaje}</div></c:if>
+    <c:if test="${not empty error}"><div class="sv-alert error" style="margin-bottom:15px; background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px;">${error}</div></c:if>
+
+    <section>
+        <c:forEach var="p" items="${pedidos}">
+            <div class="delivery-card st-${p.ESTADO_ID}">
+                
+                <div class="del-info">
+                    <div class="del-header">
+                        <h3>
+                            #${p.ID_VENTA} 
+                            <span class="status-badge st-${p.ESTADO_ID}">${p.ESTADO_NOMBRE}</span>
+                        </h3>
+                    </div>
+                    <div class="del-details">
+                        <div>📅 <fmt:formatDate value="${p.FECHA}" pattern="dd/MM/yyyy HH:mm"/></div>
+                        <div>👤 ${p.OBSERVACIONES}</div> <div style="font-size: 1.1em; margin-top: 5px;">📍 <strong>${p.DIRECCION_ENTREGA}</strong></div>
+                        <div style="margin-top: 8px; font-weight: bold; color: #0f172a;">
+                            💰 Total a Cobrar: S/ <fmt:formatNumber value="${p.TOTAL}" minFractionDigits="2"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="del-actions">
+                    <c:if test="${p.ESTADO_ID == 2}">
+                        <form action="<c:url value='/delivery/avanzar'/>" method="post">
+                            <input type="hidden" name="idVenta" value="${p.ID_VENTA}">
+                            <input type="hidden" name="estadoActual" value="2">
+                            <button class="btn" style="width:100%; background:#3b82f6; color:white;">🛵 Enviar Moto</button>
+                        </form>
+                        <a href="#modal-edit-${p.ID_VENTA}" class="btn outline" style="text-align:center;">✏️ Editar</a>
+                    </c:if>
+
+                    <c:if test="${p.ESTADO_ID == 3}">
+                        <form action="<c:url value='/delivery/avanzar'/>" method="post">
+                            <input type="hidden" name="idVenta" value="${p.ID_VENTA}">
+                            <input type="hidden" name="estadoActual" value="3">
+                            <button class="btn success" style="width:100%;">✅ Confirmar Entrega</button>
+                        </form>
+                    </c:if>
+
+                    <c:if test="${p.ESTADO_ID == 2 || p.ESTADO_ID == 3}">
+                        <form action="<c:url value='/delivery/anular'/>" method="post" onsubmit="return confirm('¿Seguro que deseas anular este pedido?');">
+                            <input type="hidden" name="idVenta" value="${p.ID_VENTA}">
+                            <button class="btn danger" style="width:100%; font-size:0.8em;">🚫 Anular</button>
+                        </form>
+                    </c:if>
+
+                    <a href="#" onclick="alert('Imprimir ticket #${p.ID_VENTA}')" class="btn ghost" style="text-align:center; font-size:0.8em;">🖨️ Ticket</a>
+                </div>
+            </div>
+
+            <div id="modal-edit-${p.ID_VENTA}" class="modal">
+                <div class="modal-box">
+                    <a href="#" class="close-modal">×</a>
+                    <h3>Editar Pedido #${p.ID_VENTA}</h3>
+                    <form action="<c:url value='/delivery/editar'/>" method="post">
+                        <input type="hidden" name="idVenta" value="${p.ID_VENTA}">
+                        
+                        <label style="display:block; margin-top:10px;">Dirección:</label>
+                        <input class="in" name="direccion" value="${p.DIRECCION_ENTREGA}" style="width:100%; margin-bottom:10px;">
+                        
+                        <label style="display:block;">Datos Cliente / Obs:</label>
+                        <textarea class="in" name="observaciones" style="width:100%; height:60px;">${p.OBSERVACIONES}</textarea>
+                        
+                        <div style="text-align:right; margin-top:15px;">
+                            <a href="#" class="btn ghost">Cancelar</a>
+                            <button class="btn pri">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </c:forEach>
+
+        <c:if test="${empty pedidos}">
+            <div style="text-align:center; padding:50px; color:#94a3b8;">
+                <h3>No hay pedidos en esta lista</h3>
+                <p>Cambia el filtro o registra un nuevo delivery.</p>
+            </div>
+        </c:if>
     </section>
-
-    <!-- ================= CONTENIDO PRINCIPAL =================
-       Formulario del pedido: datos del cliente, ítems, totales y estado. -->
-    <main class="wrapper">
-      <section class="form card">
-        <h2 class="section-title">Datos del Pedido</h2>
-
-        <!-- Form principal. Autocomplete activado para mejorar UX. -->
-        <form autocomplete="on">
-          <!-- ===== Datos del cliente ===== -->
-          <div class="grid-2">
-            <!-- Cliente: obligatorio -->
-            <div class="field">
-              <input id="cliente" name="cliente" required placeholder=" " />
-              <label for="cliente">Cliente</label>
-            </div>
-            <!-- Teléfono: opcional; inputmode=tel ayuda en móviles -->
-            <div class="field">
-              <input id="telefono" name="telefono" inputmode="tel" placeholder=" " />
-              <label for="telefono">Teléfono</label>
-            </div>
-          </div>
-
-          <!-- ===== Dirección y referencia ===== -->
-          <div class="grid-2">
-            <!-- Dirección de entrega: obligatoria -->
-            <div class="field">
-              <input id="direccion" name="direccion" required placeholder=" " />
-              <label for="direccion">Dirección</label>
-            </div>
-            <!-- Referencia: punto cercano, piso, puerta, etc. -->
-            <div class="field">
-              <input id="referencia" name="referencia" placeholder=" " />
-              <label for="referencia">Referencia</label>
-            </div>
-          </div>
-
-          <!-- ===== Ítems del pedido =====
-             Estructura en grilla: Descripción | Cant | Precio | Acciones.
-             Las acciones (✏️/🗑️) funcionan sin JS con checkboxes ocultos
-             y selectores CSS (ver Delivery.css). -->
-          <div class="items card-lite">
-            <div class="items-head">
-              <h3>Ítems</h3>
-              <p class="note"></p>
-            </div>
-
-            <!-- Encabezados de columnas -->
-            <div class="items-header">
-              <div>Descripción / producto</div>
-              <div class="num">Cant.</div>
-              <div class="num">Precio (S/)</div>
-              <div class="center">Acciones</div>
-            </div>
-
-            <!-- Tres filas visibles por defecto -->
-            <div class="items-grid">
-              <!-- ===== Fila 1 ===== -->
-              <div class="item-row">
-                <!-- Toggles ocultos (activados por los labels con íconos) -->
-                <input type="checkbox" id="e1" class="toggle edit-toggle" hidden />
-                <input
-                  type="checkbox"
-                  id="r1"
-                  class="toggle remove-toggle"
-                  hidden
-                  name="remove_row_1"
-                />
-                <!-- Campos de producto -->
-                <input class="input" name="desc[]" placeholder="Ej: Gaseosa 500ml" />
-                <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                <!-- Acciones de la fila -->
-                <div class="item-actions">
-                  <label for="e1" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                  <label for="r1" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                </div>
-              </div>
-
-              <!-- ===== Fila 2 ===== -->
-              <div class="item-row">
-                <input type="checkbox" id="e2" class="toggle edit-toggle" hidden />
-                <input
-                  type="checkbox"
-                  id="r2"
-                  class="toggle remove-toggle"
-                  hidden
-                  name="remove_row_2"
-                />
-                <input class="input" name="desc[]" placeholder="Ej: Pan molde" />
-                <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                <div class="item-actions">
-                  <label for="e2" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                  <label for="r2" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                </div>
-              </div>
-
-              <!-- ===== Fila 3 ===== -->
-              <div class="item-row">
-                <input type="checkbox" id="e3" class="toggle edit-toggle" hidden />
-                <input
-                  type="checkbox"
-                  id="r3"
-                  class="toggle remove-toggle"
-                  hidden
-                  name="remove_row_3"
-                />
-                <input class="input" name="desc[]" placeholder="Ej: Leche 1L" />
-                <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                <div class="item-actions">
-                  <label for="e3" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                  <label for="r3" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                </div>
-              </div>
-            </div>
-
-            <!-- Más filas “prearmadas” sin JS (puedes duplicar si necesitas más) -->
-            <details class="more">
-              <summary class="btn add">➕ Agregar más productos</summary>
-              <div class="items-grid">
-                <!-- ===== Fila 4 ===== -->
-                <div class="item-row">
-                  <input type="checkbox" id="e4" class="toggle edit-toggle" hidden />
-                  <input
-                    type="checkbox"
-                    id="r4"
-                    class="toggle remove-toggle"
-                    hidden
-                    name="remove_row_4"
-                  />
-                  <input class="input" name="desc[]" placeholder="Producto adicional 1" />
-                  <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                  <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                  <div class="item-actions">
-                    <label for="e4" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                    <label for="r4" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                  </div>
-                </div>
-
-                <!-- ===== Fila 5 ===== -->
-                <div class="item-row">
-                  <input type="checkbox" id="e5" class="toggle edit-toggle" hidden />
-                  <input
-                    type="checkbox"
-                    id="r5"
-                    class="toggle remove-toggle"
-                    hidden
-                    name="remove_row_5"
-                  />
-                  <input class="input" name="desc[]" placeholder="Producto adicional 2" />
-                  <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                  <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                  <div class="item-actions">
-                    <label for="e5" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                    <label for="r5" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                  </div>
-                </div>
-
-                <!-- ===== Fila 6 ===== -->
-                <div class="item-row">
-                  <input type="checkbox" id="e6" class="toggle edit-toggle" hidden />
-                  <input
-                    type="checkbox"
-                    id="r6"
-                    class="toggle remove-toggle"
-                    hidden
-                    name="remove_row_6"
-                  />
-                  <input class="input" name="desc[]" placeholder="Producto adicional 3" />
-                  <input class="input num" name="cant[]" inputmode="decimal" placeholder="0" />
-                  <input class="input num" name="prec[]" inputmode="decimal" placeholder="0.00" />
-                  <div class="item-actions">
-                    <label for="e6" class="icon-btn edit" title="Editar (resalta fila)">✏️</label>
-                    <label for="r6" class="icon-btn delete" title="Borrar (oculta fila)">🗑️</label>
-                  </div>
-                </div>
-              </div>
-            </details>
-          </div>
-
-          <!-- ===== Totales (ingreso manual; sin JS) ===== -->
-          <div class="grid-3 totales">
-            <div class="field">
-              <input
-                id="subTotal"
-                name="subTotal"
-                inputmode="decimal"
-                class="num"
-                placeholder="0.00"
-              />
-              <label for="subTotal">Subt. (S/)</label>
-            </div>
-            <div class="field">
-              <input
-                id="costoDelivery"
-                name="costoDelivery"
-                inputmode="decimal"
-                class="num"
-                placeholder="0.00"
-              />
-              <label for="costoDelivery">Delivery (S/)</label>
-            </div>
-            <div class="field">
-              <input id="total" name="total" inputmode="decimal" class="num" placeholder="0.00" />
-              <label for="total">Total (S/)</label>
-            </div>
-          </div>
-
-          <!-- ===== Estado del pedido ===== -->
-          <div class="grid-2 estado-delivery">
-            <div class="field">
-              <!-- Label fijo (no flotante) sobre el <select> -->
-              <label for="estadoDelivery" class="label-select">Estado del delivery</label>
-              <select id="estadoDelivery" name="estadoDelivery" class="select" required>
-                <option value="" selected disabled>Seleccionar estado</option>
-                <option value="PENDIENTE">Pendiente</option>
-                <option value="EN_CAMINO">En camino</option>
-                <option value="ENTREGADO">Entregado</option>
-                <option value="CANCELADO">Cancelado</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- ===== Botones finales =====
-             - Imprimir/Guardar PDF: usa el diálogo de impresión del navegador.
-             - Limpiar: resetea los campos del formulario. -->
-          <div class="actions">
-            <button class="btn primary" type="button" onclick="window.print()">
-              Imprimir / Guardar PDF
-            </button>
-            <button class="btn" type="reset">Limpiar</button>
-          </div>
-        </form>
-      </section>
-    </main>
-
-    <!-- ================= FOOTER ================= -->
-    <footer id="footer">
-      <p style="text-align: center; color: #9fb1c6; padding: 18px 0">
-        © 2025 Bodega Josdin · Sistema de Ventas
-      </p>
-    </footer>
-  </body>
+  </main>
+</body>
 </html>

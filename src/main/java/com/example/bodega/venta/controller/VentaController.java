@@ -110,14 +110,24 @@ public class VentaController {
 
     // --- 7. REGISTRAR VENTA (FINAL) ---
     @PostMapping("/registrar")
-    public String registrarVenta(@RequestParam("idVendedor") Integer idVendedor, HttpSession session) {
+    public String registrarVenta(
+        @RequestParam("idVendedor") Integer idVendedor,
+        // NUEVOS PARÁMETROS (Opcionales)
+        @RequestParam(value = "nombreCliente", required = false) String cliente,
+        @RequestParam(value = "direccion", required = false) String direccion,
+        @RequestParam(value = "telefono", required = false) String telefono,
+        HttpSession session
+    ) {
         VentaSesionDto venta = initSession(session);
-
-        if (venta.getDetalles().isEmpty()) {
+        
+        if (venta == null || venta.getDetalles().isEmpty()) {
             return "redirect:/ventas?error=carrito_vacio";
         }
 
-        // Preparar listas para el Service (adaptador entre DTO y lógica antigua)
+        // Lógica: Si escribieron dirección, es DELIVERY. Si no, es POS (Mostrador).
+        String tipoVenta = (direccion != null && !direccion.isBlank()) ? "DELIVERY" : "POS";
+        
+        // Convertir DTO a listas para el servicio
         List<Integer> ids = new ArrayList<>();
         List<Integer> cants = new ArrayList<>();
         List<Double> precios = new ArrayList<>();
@@ -128,23 +138,17 @@ public class VentaController {
             precios.add(d.getPrecioVenta());
         }
 
-        // Guardar en BD
-        ventaService.registrarVenta(
-            idVendedor, 
-            "POS", 
-            ids, 
-            cants, 
-            precios, 
-            venta.getDescuentoGlobal(), 
-            venta.getTotal()
+        // Llamamos al servicio con los datos nuevos
+        ventaService.registrarVentaCompleta(
+            idVendedor, tipoVenta, ids, cants, precios, 
+            venta.getDescuentoGlobal(), venta.getTotal(),
+            cliente, direccion, telefono // <--- Pasamos datos delivery
         );
 
-        // Limpiar sesión tras éxito
         session.setAttribute("ventaActual", new VentaSesionDto());
-
-        return "redirect:/ventas?exito=true";
+        return "redirect:/ventas?exito=true&tipo=" + tipoVenta;
     }
-    
+
     // --- IMPRIMIR (Placeholder) ---
     @GetMapping("/imprimir-ultimo")
     public String imprimirUltimo() {
