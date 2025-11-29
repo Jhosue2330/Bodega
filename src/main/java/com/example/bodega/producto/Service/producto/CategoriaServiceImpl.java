@@ -1,11 +1,11 @@
-package com.example.bodega.Service.producto;
+package com.example.bodega.producto.Service.producto;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.bodega.model.producto.Categoria;
-import com.example.bodega.repository.producto.dao.CategoriaDao;
+import com.example.bodega.producto.model.producto.Categoria;
+import com.example.bodega.producto.repository.producto.dao.CategoriaDao;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {

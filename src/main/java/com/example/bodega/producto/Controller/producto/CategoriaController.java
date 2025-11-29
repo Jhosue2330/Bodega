@@ -1,4 +1,4 @@
-package com.example.bodega.Controller.producto;
+package com.example.bodega.producto.Controller.producto;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.bodega.Service.producto.CategoriaService;
-import com.example.bodega.model.producto.Categoria;
+import com.example.bodega.producto.Service.producto.CategoriaService;
+import com.example.bodega.producto.model.producto.Categoria;
 
 @Controller
 @RequestMapping("/categoria")

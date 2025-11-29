@@ -62,8 +62,6 @@ INSERT INTO USUARIO (id_usuario, nombre_completo, correo, hash_password, telefon
 
 -- =======================================================
 -- 5) PRODUCTOS (referencian CATEGORIA)
---    Nota: asume IDs autogenerados de categoría: 
---          1=Abarrotes, 2=Bebidas, 3=Snacks y Dulces, 4=Limpieza, 5=Licores
 -- =======================================================
 INSERT INTO PRODUCTO (nombre, sku, precio, stock_actual, stock_minimo, id_categoria, activo) VALUES
   ('Arroz Costeño ','001',  24.50, 50, 10, 1, TRUE),
@@ -75,11 +73,6 @@ INSERT INTO PRODUCTO (sku, nombre, precio, stock_actual, stock_minimo, activo) V
 ('P-0001','Audífonos Pro',89.90,10,1,true),
 ('P-0002','Mouse Inalámbrico',49.50,20,2,true),
 ('P-0003','Teclado Mecánico',199.00,5,1,true);
--- (Opcional) Semillas para PROMOCION si quieres probar el módulo:
--- INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo) VALUES
---   ('Promo Verano', 'Descuentos en bebidas', DATE '2025-01-01', DATE '2025-02-15', TRUE);
--- INSERT INTO PROMOCION_PRODUCTO (id_promocion, id_producto, descuento_pct) VALUES
---   (1, 3, 10.00);
 
 INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
 VALUES 

@@ -1,12 +1,12 @@
 // src/main/java/com/example/bodega/Service/producto/ProductoServiceImpl.java
-package com.example.bodega.Service.producto;
+package com.example.bodega.producto.Service.producto;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.bodega.model.producto.Producto;
-import com.example.bodega.repository.producto.dao.ProductoDao;
+import com.example.bodega.producto.model.producto.Producto;
+import com.example.bodega.producto.repository.producto.dao.ProductoDao;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
