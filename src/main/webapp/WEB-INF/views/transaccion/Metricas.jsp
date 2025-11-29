@@ -1,217 +1,179 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Métricas — Sistema de Ventas</title>
-    <link rel="stylesheet" href="../CSS/Metricas.css" />
-  </head>
-  <body>
-    <!-- ================= NAVBAR ================= -->
+    
+    <link rel="stylesheet" href="<c:url value='/CSS/Metricas.css'/>" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .chart-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .canvas-container { position: relative; height: 300px; width: 100%; }
+    </style>
+</head>
+<body>
+
     <header id="navbar">
-      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+        <%@ include file="../componentes/navbar_bodega.jsp" %>
     </header>
 
-    <!-- ================= CONTENIDO PRINCIPAL ================= -->
     <main class="wrap">
-      <!-- Cabecera del panel -->
-      <header class="page-head">
-        <h2>📊 Métricas</h2>
-        <p class="page-sub">Panel estático con indicadores clave del sistema de ventas.</p>
-      </header>
+        <header class="page-head">
+            <h2>📊 Métricas del Negocio</h2>
+            <p class="page-sub">Indicadores actualizados en tiempo real.</p>
+        </header>
 
-      <!-- === Indicadores (KPIs) === -->
-      <section class="kpis">
-        <div class="kpi card">
-          <div class="kpi-value">12</div>
-          <div class="kpi-label">Pedidos de hoy</div>
-        </div>
-        <div class="kpi card">
-          <div class="kpi-value">S/ 256.40</div>
-          <div class="kpi-label">Ventas totales</div>
-        </div>
-        <div class="kpi card">
-          <div class="kpi-value">66%</div>
-          <div class="kpi-label">% cumplimiento</div>
-        </div>
-        <div class="kpi card">
-          <div class="kpi-value">S/ 21.37</div>
-          <div class="kpi-label">Ticket promedio</div>
-        </div>
-      </section>
+        <section class="kpis">
+            <div class="kpi card">
+                <div class="kpi-value">${m.pedidosHoy}</div>
+                <div class="kpi-label">Pedidos de hoy</div>
+            </div>
+            <div class="kpi card">
+                <div class="kpi-value">
+                    S/ <fmt:formatNumber value="${m.ventasTotalMes}" minFractionDigits="2" maxFractionDigits="2"/>
+                </div>
+                <div class="kpi-label">Ventas mes actual</div>
+            </div>
+            <div class="kpi card">
+                <div class="kpi-value">
+                     S/ <fmt:formatNumber value="${m.ticketPromedioMes}" minFractionDigits="2" maxFractionDigits="2"/>
+                </div>
+                <div class="kpi-label">Ticket promedio</div>
+            </div>
+            <div class="kpi card">
+                <div class="kpi-value">100%</div>
+                <div class="kpi-label">Estado Sistema</div>
+            </div>
+        </section>
 
-      <!-- === Gráfico: Ventas por día === -->
-      <section class="card chart-section" style="--cols: 7">
-        <h3>Ventas por día — Últimos 7 días</h3>
-        <div class="chart-container">
-          <div class="chart-bar">
-            <div class="bar" style="height: 65%" title="S/ 84.20"></div>
-            <div class="bar-label">Lunes<br /><small>15</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 40%" title="S/ 52.10"></div>
-            <div class="bar-label">Martes<br /><small>16</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 80%" title="S/ 104.50"></div>
-            <div class="bar-label">Miércoles<br /><small>17</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 55%" title="S/ 71.80"></div>
-            <div class="bar-label">Jueves<br /><small>18</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 70%" title="S/ 91.30"></div>
-            <div class="bar-label">Viernes<br /><small>19</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 45%" title="S/ 58.60"></div>
-            <div class="bar-label">Sábado<br /><small>20</small></div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 90%" title="S/ 116.80"></div>
-            <div class="bar-label">Domingo<br /><small>21</small></div>
-          </div>
-        </div>
-        <div class="chart-values">
-          <span>S/ 84.20</span>
-          <span>S/ 52.10</span>
-          <span>S/ 104.50</span>
-          <span>S/ 71.80</span>
-          <span>S/ 91.30</span>
-          <span>S/ 58.60</span>
-          <span>S/ 116.80</span>
-        </div>
-      </section>
+        <input type="hidden" id="data-dias-labels" value="<c:out value='${m.diasLabels}' default='[]'/>" />
+        <input type="hidden" id="data-dias-values" value="<c:out value='${m.diasData}' default='[]'/>" />
 
-      <!-- === Gráfico: Ventas por semana === -->
-      <section class="card chart-section" style="--cols: 6">
-        <h3>Ventas por semana — Últimas 12 semanas</h3>
-        <div class="chart-container week-chart">
-          <div class="chart-bar">
-            <div class="bar" style="height: 30%" title="S/ 420"></div>
-            <div class="bar-label">Sem 10</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 45%" title="S/ 630"></div>
-            <div class="bar-label">Sem 11</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 60%" title="S/ 840"></div>
-            <div class="bar-label">Sem 12</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 50%" title="S/ 700"></div>
-            <div class="bar-label">Sem 13</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 75%" title="S/ 1,050"></div>
-            <div class="bar-label">Sem 14</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 90%" title="S/ 1,260"></div>
-            <div class="bar-label">Sem 15</div>
-          </div>
-        </div>
-        <div class="chart-values">
-          <span>S/ 420</span>
-          <span>S/ 630</span>
-          <span>S/ 840</span>
-          <span>S/ 700</span>
-          <span>S/ 1,050</span>
-          <span>S/ 1,260</span>
-        </div>
-        <p class="chart-note">Rango: Semana 10 a Semana 15 (abril - mayo 2025)</p>
-      </section>
+        <input type="hidden" id="data-meses-labels" value="<c:out value='${m.mesesLabels}' default='[]'/>" />
+        <input type="hidden" id="data-meses-values" value="<c:out value='${m.mesesData}' default='[]'/>" />
 
-      <!-- === Gráfico: Ventas por mes === -->
-      <section class="card chart-section" style="--cols: 6">
-        <h3>Ventas por mes — Últimos 6 meses</h3>
-        <div class="chart-container month-chart">
-          <div class="chart-bar">
-            <div class="bar" style="height: 40%" title="S/ 1,800"></div>
-            <div class="bar-label">Dic</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 50%" title="S/ 2,250"></div>
-            <div class="bar-label">Ene</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 55%" title="S/ 2,475"></div>
-            <div class="bar-label">Feb</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 60%" title="S/ 2,700"></div>
-            <div class="bar-label">Mar</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 70%" title="S/ 3,150"></div>
-            <div class="bar-label">Abr</div>
-          </div>
-          <div class="chart-bar">
-            <div class="bar" style="height: 85%" title="S/ 3,825"></div>
-            <div class="bar-label">May</div>
-          </div>
-        </div>
-        <div class="chart-values">
-          <span>S/ 1,800</span>
-          <span>S/ 2,250</span>
-          <span>S/ 2,475</span>
-          <span>S/ 2,700</span>
-          <span>S/ 3,150</span>
-          <span>S/ 3,825</span>
-        </div>
-        <p class="chart-note">Rango: Diciembre 2024 – Mayo 2025</p>
-      </section>
+        <input type="hidden" id="data-prod-labels" value="<c:out value='${m.topProductosLabels}' default='[]'/>" />
+        <input type="hidden" id="data-prod-values" value="<c:out value='${m.topProductosData}' default='[]'/>" />
 
-      <!-- === Productos más vendidos === -->
-      <section class="card chart-section">
-        <h3>Los 5 Productos más vendidos en los últimos 30 días</h3>
-        <ul class="product-value-list">
-          <li>
-            <span class="product-name">Cerveza Pilsen 625ml</span
-            ><span class="product-value">S/ 1,240.50</span>
-          </li>
-          <li>
-            <span class="product-name">Gaseosa Coca-Cola 3L</span
-            ><span class="product-value">S/ 980.20</span>
-          </li>
-          <li>
-            <span class="product-name">Snack Doritos 200g</span
-            ><span class="product-value">S/ 720.80</span>
-          </li>
-          <li>
-            <span class="product-name">Agua San Mateo 2.5L</span
-            ><span class="product-value">S/ 640.00</span>
-          </li>
-          <li>
-            <span class="product-name">Cerveza Cusqueña Negra</span
-            ><span class="product-value">S/ 580.30</span>
-          </li>
-        </ul>
-      </section>
 
-      <!-- Botones finales -->
-      <div style="text-align: center; margin-top: 20px">
-        <button class="btn primary" type="button" onclick="window.print()">
-          🖨️ Imprimir / Guardar PDF
-        </button>
-      </div>
+        <section class="card chart-section">
+            <h3>Ventas: Últimos 7 Días</h3>
+            <div class="canvas-container"><canvas id="chartDias"></canvas></div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <section class="card chart-section">
+                <h3>Tendencia Mensual</h3>
+                <div class="canvas-container"><canvas id="chartMeses"></canvas></div>
+            </section>
+            <section class="card chart-section">
+                <h3>Top 5 Productos</h3>
+                <div class="canvas-container"><canvas id="chartProductos"></canvas></div>
+            </section>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+            <button class="btn primary" type="button" onclick="window.print()">🖨️ Imprimir Reporte</button>
+        </div>
     </main>
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="footer">
-      <div class="footer-content">
-        <p>© 2025 Sistema de Ventas – Maqueta</p>
-        <ul class="social-links">
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">WhatsApp</a></li>
-        </ul>
-      </div>
-    </footer>
-  </body>
+    <script>
+        // Función auxiliar para convertir el string "[...]" a un Array real de JS
+        function parseList(id) {
+            var raw = document.getElementById(id).value;
+            // Si está vacío o es nulo, retornar array vacío
+            if (!raw || raw.trim() === "") return [];
+            try {
+                // Reemplazamos comillas simples por dobles para que sea JSON válido si fuera necesario,
+                // pero como tu backend envía formato JS array ['a'], usamos una evaluación segura.
+                // NOTA: Como el backend envía strings tipo "['Lun', 'Mar']", usamos new Function para parsearlo.
+                return new Function("return " + raw)(); 
+            } catch (e) {
+                console.error("Error parseando datos para " + id, e);
+                return [];
+            }
+        }
+
+        // 1. LEER DATOS DESDE LOS INPUTS OCULTOS
+        var labelsDias = parseList('data-dias-labels');
+        var dataDias   = parseList('data-dias-values');
+
+        var labelsMeses = parseList('data-meses-labels');
+        var dataMeses   = parseList('data-meses-values');
+
+        var labelsProd = parseList('data-prod-labels');
+        var dataProd   = parseList('data-prod-values');
+
+        // Configuración Global
+        Chart.defaults.font.family = "'Segoe UI', 'Helvetica', 'Arial', sans-serif";
+        Chart.defaults.color = '#666';
+
+        // 2. RENDERIZAR
+        
+        // A) DIARIO
+        var ctxDias = document.getElementById('chartDias');
+        if (ctxDias) {
+            new Chart(ctxDias, {
+                type: 'line',
+                data: {
+                    labels: labelsDias,
+                    datasets: [{
+                        label: 'Ventas (S/)',
+                        data: dataDias,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        // B) MENSUAL
+        var ctxMeses = document.getElementById('chartMeses');
+        if (ctxMeses) {
+            new Chart(ctxMeses, {
+                type: 'bar',
+                data: {
+                    labels: labelsMeses,
+                    datasets: [{
+                        label: 'Total Mes (S/)',
+                        data: dataMeses,
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        // C) PRODUCTOS
+        var ctxProd = document.getElementById('chartProductos');
+        if (ctxProd) {
+            new Chart(ctxProd, {
+                type: 'bar',
+                data: {
+                    labels: labelsProd,
+                    datasets: [{
+                        label: 'Vendido (S/)',
+                        data: dataProd,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                        borderWidth: 1
+                    }]
+                },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+    </script>
+</body>
 </html>

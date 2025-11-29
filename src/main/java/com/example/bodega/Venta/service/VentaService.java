@@ -1,8 +1,6 @@
-// src/main/java/com/example/bodega/venta/service/VentaService.java
+package com.example.bodega.Venta.service;
 
-package com.example.bodega.venta.service;
-
-import com.example.bodega.venta.repository.VentaRepository;
+import com.example.bodega.Venta.repository.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +27,12 @@ public class VentaService {
         );
     }
 
-    public Map<String, Object> buscarProductoPorId(Integer idProducto) {
-        return ventaRepository.findProductoById(idProducto);
-    }
-
     public List<Map<String, Object>> buscarProductos(String q) {
         return ventaRepository.buscarProductos(q);
+    }
+
+    // Nuevo método para el historial
+    public List<Map<String, Object>> listarUltimasVentas() {
+        return ventaRepository.listarUltimasVentas();
     }
 }
