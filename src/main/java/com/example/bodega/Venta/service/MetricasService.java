@@ -18,70 +18,78 @@ public class MetricasService {
     public MetricasDto obtenerMetricas() {
         MetricasDto dto = new MetricasDto();
 
-        // 1. Cargar KPIs básicos
+        // 1. KPIs
         Integer pedidosHoy = metricasRepository.contarPedidosHoy();
         Double ventasMes = metricasRepository.sumarVentasMesActual();
-        
-        // Evitar división por cero en ticket promedio
-        Double ticketPromedio = (pedidosHoy > 0) ? (ventasMes / pedidosHoy) : 0.0; // Nota: Esto es un aprox simple, lo ideal es contar pedidos del mes
+        Double ticketPromedio = (pedidosHoy > 0) ? (ventasMes / pedidosHoy) : 0.0;
 
         dto.setPedidosHoy(pedidosHoy);
         dto.setVentasTotalMes(ventasMes);
         dto.setTicketPromedioMes(ticketPromedio);
 
-        // 2. Procesar Gráfico DIARIO
+        // ==================================================================
+        // AHORA TODO USA "LABEL" Y "TOTAL" (Ver Repositorio)
+        // ==================================================================
+
+        // 2. Gráfico DIARIO
         List<Map<String, Object>> dias = metricasRepository.ventasUltimos7Dias();
-        dto.setDiasLabels(crearLabels(dias, "dia")); // Helper para extraer columna
-        dto.setDiasData(crearData(dias, "total"));
+        dto.setDiasLabels(crearLabels(dias)); 
+        dto.setDiasData(crearData(dias));    
 
-        // 3. Procesar Gráfico MENSUAL
-        List<Map<String, Object>> meses = metricasRepository.ventasUltimos6Meses();
-        // Mapeo simple de número de mes a nombre (opcional, o dejar el número)
-        dto.setMesesLabels(crearLabels(meses, "mes")); 
-        dto.setMesesData(crearData(meses, "total"));
+        // 3. Gráfico SEMANAL (Nuevo)
+        List<Map<String, Object>> semanas = metricasRepository.ventasUltimas12Semanas();
+        dto.setSemanasLabels(crearLabels(semanas));
+        dto.setSemanasData(crearData(semanas));
 
-        // 4. Procesar Top Productos
+        // 4. Gráfico MENSUAL (12 Meses)
+        List<Map<String, Object>> meses = metricasRepository.ventasUltimos12Meses();
+        dto.setMesesLabels(crearLabels(meses));
+        dto.setMesesData(crearData(meses));
+
+        // 5. Top Productos
         List<Map<String, Object>> tops = metricasRepository.top5Productos();
-        dto.setTopProductosLabels(crearLabelsString(tops, "nombre")); // Nombres van entre comillas
-        dto.setTopProductosData(crearData(tops, "totalVendido"));
-
-        // Dejar semanas vacío o implementarlo similar a meses si se requiere
-        dto.setSemanasLabels("[]");
-        dto.setSemanasData("[]");
+        dto.setTopProductosLabels(crearLabelsString(tops));      
+        dto.setTopProductosData(crearData(tops)); 
 
         return dto;
     }
 
-    // --- Helpers para formatear Strings para JS ---
+    // --- Helpers Simplificados (Buscan siempre "LABEL" y "TOTAL") ---
 
-    // Crea lista de números: 100.50, 200.00, 50
-    private String crearData(List<Map<String, Object>> lista, String keyColumna) {
+    private String crearData(List<Map<String, Object>> lista) {
         StringJoiner sj = new StringJoiner(", ", "[", "]");
         for (Map<String, Object> fila : lista) {
-            Object val = fila.get(keyColumna);
+            // Buscamos "TOTAL"
+            Object val = getValueCaseInsensitive(fila, "TOTAL");
             sj.add(val != null ? val.toString() : "0");
         }
         return sj.toString();
     }
 
-    // Crea lista de etiquetas simple: 2023-11-01, 2023-11-02 (Sin comillas, ojo)
-    // Para fechas o números que ChartJS acepta directo
-    private String crearLabels(List<Map<String, Object>> lista, String keyColumna) {
-        StringJoiner sj = new StringJoiner("', '", "['", "']"); // Envuelve en comillas simples
+    private String crearLabels(List<Map<String, Object>> lista) {
+        StringJoiner sj = new StringJoiner("', '", "['", "']");
         for (Map<String, Object> fila : lista) {
-            Object val = fila.get(keyColumna);
+            // Buscamos "LABEL"
+            Object val = getValueCaseInsensitive(fila, "LABEL");
             sj.add(val != null ? val.toString() : "");
         }
         return sj.toString();
     }
     
-    // Crea lista de etiquetas Texto: 'Cerveza', 'Coca Cola'
-    private String crearLabelsString(List<Map<String, Object>> lista, String keyColumna) {
+    // Para productos que tienen nombres con comillas potenciales
+    private String crearLabelsString(List<Map<String, Object>> lista) {
         StringJoiner sj = new StringJoiner("', '", "['", "']");
         for (Map<String, Object> fila : lista) {
-            Object val = fila.get(keyColumna);
-            sj.add(val != null ? val.toString().replace("'", "\\'") : ""); // Escapar comillas simples
+            Object val = getValueCaseInsensitive(fila, "LABEL");
+            sj.add(val != null ? val.toString().replace("'", "\\'") : "");
         }
         return sj.toString();
+    }
+
+    private Object getValueCaseInsensitive(Map<String, Object> map, String key) {
+        if (map.containsKey(key)) return map.get(key);
+        if (map.containsKey(key.toUpperCase())) return map.get(key.toUpperCase());
+        if (map.containsKey(key.toLowerCase())) return map.get(key.toLowerCase());
+        return null;
     }
 }

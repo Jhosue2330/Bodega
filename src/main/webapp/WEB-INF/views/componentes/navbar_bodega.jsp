@@ -25,7 +25,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </ul>
     </li>
 
-    <li><a class="nav-link" href="<c:url value='/transaccion/metricas'/>">Métricas</a></li>
+    <li><a class="nav-link" href="<c:url value='/metricas'/>">Métricas</a></li>
     <li><a class="btn nav-link" href="<c:url value='/logout'/>" id="logoutBtn">Salir</a></li>
   </ul>
   <button class="menu-toggle" aria-label="Menú">☰</button>

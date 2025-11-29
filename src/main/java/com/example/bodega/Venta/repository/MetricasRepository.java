@@ -12,49 +12,62 @@ public class MetricasRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // 1. KPI: Pedidos de HOY
+    // 1. KPIs
     public Integer contarPedidosHoy() {
-        String sql = "SELECT COUNT(*) FROM VENTA WHERE CAST(fecha AS DATE) = CURRENT_DATE";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        try {
+            return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM VENTA WHERE fecha >= CURRENT_DATE", Integer.class);
+        } catch (Exception e) { return 0; }
     }
 
-    // 2. KPI: Total Ventas del Mes Actual
     public Double sumarVentasMesActual() {
+        // Suma ventas del mes actual
         String sql = "SELECT COALESCE(SUM(total), 0) FROM VENTA " +
                      "WHERE EXTRACT(YEAR FROM fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
                      "AND EXTRACT(MONTH FROM fecha) = EXTRACT(MONTH FROM CURRENT_DATE)";
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
 
-    // 3. Gráfico: Ventas por Día (Últimos 7 días)
+    // 2. DIARIO (Últimos 7 días)
     public List<Map<String, Object>> ventasUltimos7Dias() {
-        // Devuelve: FECHA | TOTAL
-        String sql = "SELECT CAST(fecha AS DATE) as dia, SUM(total) as total " +
+        // Agrupa por día formateado (dd-MM)
+        String sql = "SELECT FORMATDATETIME(fecha, 'dd-MM') as LABEL, SUM(total) as TOTAL " +
                      "FROM VENTA " +
                      "WHERE fecha >= DATEADD('DAY', -6, CURRENT_DATE) " +
-                     "GROUP BY CAST(fecha AS DATE) " +
-                     "ORDER BY dia ASC";
+                     "GROUP BY FORMATDATETIME(fecha, 'dd-MM'), CAST(fecha AS DATE) " +
+                     "ORDER BY CAST(fecha AS DATE) ASC";
         return jdbcTemplate.queryForList(sql);
     }
 
-    // 4. Gráfico: Ventas por Mes (Últimos 6 meses)
-    public List<Map<String, Object>> ventasUltimos6Meses() {
-        // Devuelve: MES (Número) | TOTAL
-        String sql = "SELECT EXTRACT(MONTH FROM fecha) as mes, SUM(total) as total " +
+    // 3. SEMANAL (Últimas 12 semanas) [CORREGIDO]
+    public List<Map<String, Object>> ventasUltimas12Semanas() {
+        // CORRECCIÓN: Usamos FORMATDATETIME para generar '2025-W48' directamente.
+        // Y usamos -84 días (12 semanas) para asegurar compatibilidad.
+        String sql = "SELECT FORMATDATETIME(fecha, 'YYYY-''W''ww') as LABEL, SUM(total) as TOTAL " +
                      "FROM VENTA " +
-                     "WHERE fecha >= DATEADD('MONTH', -5, CURRENT_DATE) " +
-                     "GROUP BY EXTRACT(MONTH FROM fecha) " +
-                     "ORDER BY mes ASC";
+                     "WHERE fecha >= DATEADD('DAY', -84, CURRENT_DATE) " +
+                     "GROUP BY LABEL " +
+                     "ORDER BY LABEL ASC";
         return jdbcTemplate.queryForList(sql);
     }
 
-    // 5. Gráfico: Top 5 Productos (Histórico o último mes)
+    // 4. MENSUAL (Últimos 12 meses)
+    public List<Map<String, Object>> ventasUltimos12Meses() {
+        // Agrupa por Mes (yyyy-MM)
+        String sql = "SELECT FORMATDATETIME(fecha, 'yyyy-MM') as LABEL, SUM(total) as TOTAL " +
+                     "FROM VENTA " +
+                     "WHERE fecha >= DATEADD('MONTH', -11, CURRENT_DATE) " +
+                     "GROUP BY FORMATDATETIME(fecha, 'yyyy-MM') " +
+                     "ORDER BY LABEL ASC";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    // 5. TOP PRODUCTOS
     public List<Map<String, Object>> top5Productos() {
-        String sql = "SELECT p.nombre, SUM(dv.subtotal) as totalVendido " +
+        String sql = "SELECT p.nombre as LABEL, SUM(dv.subtotal) as TOTAL " +
                      "FROM DETALLE_VENTA dv " +
                      "JOIN PRODUCTO p ON dv.id_producto = p.id_producto " +
                      "GROUP BY p.nombre " +
-                     "ORDER BY totalVendido DESC " +
+                     "ORDER BY TOTAL DESC " +
                      "LIMIT 5";
         return jdbcTemplate.queryForList(sql);
     }
