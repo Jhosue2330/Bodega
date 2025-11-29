@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import com.example.bodega.inventario.repo.MovimientoRepo.Movimiento;;
+import java.util.Map; // <--- IMPORTANTE
+import com.example.bodega.inventario.repo.MovimientoRepo.Movimiento;
 
 @Service
 public class MovimientoService {
@@ -35,4 +36,9 @@ public class MovimientoService {
 
     public List<Movimiento> listarPorProducto(int idProducto) { return repo.listarPorProducto(idProducto); }
     public List<Movimiento> listarRecientes(int limit) { return repo.listarRecientes(limit); }
+
+    // --- NUEVO MÉTODO CONECTADO AL REPO ---
+    public List<Map<String, Object>> verHistorial() {
+        return repo.listarHistorialCompleto();
+    }
 }

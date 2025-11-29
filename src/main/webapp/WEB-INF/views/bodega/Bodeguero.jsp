@@ -6,11 +6,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel del Bodeguero</title>
-
+    <title>Inventario — Bodega</title>
     <link rel="stylesheet" href="<c:url value='/CSS/Navbar.css'/>" />
     <link rel="stylesheet" href="<c:url value='/CSS/Bodeguero.css'/>" />
     <link rel="stylesheet" href="<c:url value='/CSS/Footer.css'/>" />
+    <style>
+        /* Estilo simple para alertas de stock */
+        .stock-ok { color: green; font-weight: bold; }
+        .stock-low { color: #d97706; font-weight: bold; background: #fef3c7; padding: 2px 6px; border-radius: 4px;}
+        .stock-crit { color: red; font-weight: bold; background: #fee2e2; padding: 2px 6px; border-radius: 4px;}
+    </style>
   </head>
   <body class="bodega-page">
     <header id="navbar">
@@ -19,97 +24,61 @@
 
     <div class="bodega-wrap">
       <div class="bodega-top">
-        <div class="bodega-title">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M3 3h18v4H3V3zm2 6h14l-1.2 9.6a2 2 0 0 1-2 1.4H8.2a2 2 0 0 1-2-1.4L5 9z" fill="url(#g)"/>
-            <defs>
-              <linearGradient id="g" x1="0" y1="0" x2="24" y2="24">
-                <stop stop-color="#5eead4" />
-                <stop offset="1" stop-color="#7c3aed" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <div>
-            <div style="font-size: 22px; line-height: 1">Bodega</div>
-            <div class="badge">Operaciones</div>
-          </div>
+         <div class="bodega-title">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <div>
+                <div style="font-size: 22px; line-height: 1">Inventario</div>
+                <div class="badge">Control de Stock</div>
+            </div>
         </div>
         <div class="actions">
-          <a href="<c:url value='/bodeguero/movimientos/nuevo'/>" class="btn">+ Nuevo movimiento (varios productos)</a>
+          <a href="<c:url value='/bodeguero/movimientos/nuevo'/>" class="btn pri">+ Movimiento Masivo</a>
         </div>
       </div>
 
       <div class="kpis">
         <div class="card kpi">
-          <div class="label">Productos</div>
-          <div class="value">
-            <c:out value="${empty productos ? 0 : fn:length(productos)}" />
-          </div>
+          <div class="label">Total Productos</div>
+          <div class="value"><c:out value="${empty productos ? 0 : fn:length(productos)}" /></div>
         </div>
         <div class="card kpi">
-          <div class="label">Bajo stock</div>
-          <div class="value">
-            <c:choose>
-              <c:when test="${not empty productos}">
-                <c:set var="low" value="0" />
+          <div class="label">Alertas (Bajo Stock)</div>
+          <div class="value" style="color: #d97706;">
+             <c:set var="low" value="0" />
+             <c:if test="${not empty productos}">
                 <c:forEach var="p" items="${productos}">
-                  <c:if test="${p.stockActual <= p.stockMinimo}">
-                    <c:set var="low" value="${low + 1}" />
-                  </c:if>
+                  <c:if test="${p.stockActual <= p.stockMinimo}"><c:set var="low" value="${low + 1}" /></c:if>
                 </c:forEach>
-                ${low}
-              </c:when>
-              <c:otherwise>0</c:otherwise>
-            </c:choose>
+             </c:if>
+             ${low}
           </div>
-        </div>
-        <div class="card kpi">
-          <div class="label">Pedidos delivery</div>
-          <div class="value">0</div>
-        </div>
-        <div class="card kpi">
-          <div class="label">Ventas hoy</div>
-          <div class="value">S/ 0.00</div>
         </div>
       </div>
 
       <div class="tabs">
-        <span class="tab active">Stock</span>
-        <a class="tab" href="<c:url value='/bodeguero/historial'/>">Historial</a>
-        <a class="tab" href="<c:url value='/delivery/pedidos'/>">Pedidos Delivery</a>
-        <a class="tab" href="<c:url value='/venta/registro'/>">Ventas</a>
+        <span class="tab active">Stock Actual</span>
+        <a class="tab" href="<c:url value='/bodeguero/historial'/>">Historial (Kardex)</a>
       </div>
 
       <section class="section active">
         <div class="tools" id="stock-tools">
           <form method="get" action="<c:url value='/bodeguero/dashboard'/>">
-            <input class="input" type="search" name="q" placeholder="Buscar por nombre o SKU..." />
+            <input class="input" type="search" name="q" placeholder="Buscar SKU o nombre..." />
             <select class="select" name="cat">
-              <option value="">Todas las categorías</option>
+              <option value="">Categoría...</option>
               <c:forEach var="cat" items="${categorias}">
                 <option value="${cat.idCategoria}">${cat.nombre}</option>
               </c:forEach>
             </select>
-            <button class="btn tiny" type="submit">Filtrar</button>
+            <button class="btn tiny" type="submit">Buscar</button>
           </form>
         </div>
 
-        <div class="card" style="margin-bottom: 10px">
-          <p class="sub" style="margin: 0">
-            Usa <strong>Entrada</strong> / <strong>Salida</strong> por producto. (Los enlaces abren formularios server-side.)
-          </p>
-        </div>
-
-        <c:if test="${not empty mensaje}">
-          <div class="card" style="background:#e6ffed;border:1px solid #b7f0c6;padding:10px;margin-bottom:12px">
-            <strong>OK:</strong> <c:out value="${mensaje}"/>
-          </div>
-        </c:if>
-        <c:if test="${not empty error}">
-          <div class="card" style="background:#ffecec;border:1px solid #f7c6c6;padding:10px;margin-bottom:12px">
-            <strong>Error:</strong> <c:out value="${error}"/>
-          </div>
-        </c:if>
+        <c:if test="${not empty mensaje}"><div class="sv-alert success">${mensaje}</div></c:if>
 
         <div class="table-wrap">
           <table class="table">
@@ -117,95 +86,50 @@
               <tr>
                 <th>SKU</th>
                 <th>Producto</th>
-                <th>Categoría</th>
-                <th>Stock</th>
-                <th>Mín.</th>
-                <th>Estado</th>
-                <th style="text-align: right">Acciones</th>
+                <th>Stock Físico</th>
+                <th>Estado Stock</th> <th style="text-align: right">Registrar Movimiento</th>
               </tr>
             </thead>
             <tbody>
               <c:forEach var="p" items="${productos}">
-                <tr data-id-producto="${p.idProducto}">
+                <tr>
                   <td>${p.sku}</td>
                   <td>${p.nombre}</td>
-                  <td>
-                    <c:forEach var="cat" items="${categorias}">
-                      <c:if test="${cat.idCategoria == p.idCategoria}">${cat.nombre}</c:if>
-                    </c:forEach>
+                  
+                  <td style="font-size: 1.1em;">
+                    ${p.stockActual}
                   </td>
-                  <td>${p.stockActual}</td>
-                  <td>${p.stockMinimo}</td>
+
                   <td>
-                    <span class="status ${p.activo ? 'ok' : 'off'}">
-                      <c:out value="${p.activo ? 'OK' : 'Inactivo'}" />
-                    </span>
+                    <c:choose>
+                        <c:when test="${p.stockActual == 0}">
+                            <span class="stock-crit">SIN STOCK</span>
+                        </c:when>
+                        <c:when test="${p.stockActual <= p.stockMinimo}">
+                            <span class="stock-low">BAJO (Mín: ${p.stockMinimo})</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="stock-ok">Normal</span>
+                        </c:otherwise>
+                    </c:choose>
                   </td>
+
                   <td style="text-align: right">
-                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada?id=${p.idProducto}'/>">Entrada</a>
-                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida?id=${p.idProducto}'/>">Salida</a>
+                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada?id=${p.idProducto}'/>">Entrada (+)</a>
+                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida?id=${p.idProducto}'/>">Salida (-)</a>
                   </td>
                 </tr>
               </c:forEach>
-
-              <c:if test="${empty productos}">
-                <tr>
-                  <td>P-0001</td>
-                  <td>Arroz 5Kg</td>
-                  <td>Abarrotes</td>
-                  <td>12</td>
-                  <td>5</td>
-                  <td><span class="status ok">OK</span></td>
-                  <td style="text-align: right">
-                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
-                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>P-0002</td>
-                  <td>Azúcar 1Kg</td>
-                  <td>Abarrotes</td>
-                  <td>40</td>
-                  <td>10</td>
-                  <td><span class="status ok">OK</span></td>
-                  <td style="text-align: right">
-                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
-                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>P-0003</td>
-                  <td>Aceite 1L</td>
-                  <td>Abarrotes</td>
-                  <td>8</td>
-                  <td>6</td>
-                  <td><span class="status off">Inactivo</span></td>
-                  <td style="text-align: right">
-                    <a class="btn tiny" href="<c:url value='/bodeguero/entrada'/>">Entrada</a>
-                    <a class="btn tiny outline" href="<c:url value='/bodeguero/salida'/>">Salida</a>
-                  </td>
-                </tr>
-              </c:if>
+              <c:if test="${empty productos}"><tr><td colspan="5">No hay productos registrados.</td></tr></c:if>
             </tbody>
           </table>
         </div>
-
-        <p class="note">
-          Si necesitas cambiar precio/nombre/estado del producto, ve a
-          <a href="<c:url value='/producto/gestion'/>">Gestión</a>.
-        </p>
       </section>
     </div>
 
     <footer class="footer">
       <div class="footer-content">
-        <p>© 2025 Sistema de Ventas – Maqueta</p>
-        <ul class="social-links">
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">WhatsApp</a></li>
-        </ul>
+        <p>© 2025 Sistema de Ventas</p>
       </div>
     </footer>
   </body>

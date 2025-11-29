@@ -56,14 +56,7 @@
           <input class="input" name="motivo" placeholder="Venta / Delivery / Nota">
         </div>
 
-        <div class="field">
-          <label>Usuario (responsable)</label>
-          <select class="input" name="idUsuario" required>
-            <c:forEach var="u" items="${usuarios}">
-              <option value="${u.idUsuario}">${u.nombreCompleto}</option>
-            </c:forEach>
-          </select>
-        </div>
+        <input type="hidden" name="idUsuario" value="1" />
 
         <div class="field">
           <label>Id venta (opcional)</label>

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map; // <--- IMPORTANTE
 
 @Repository
 public class MovimientoRepo {
@@ -13,6 +14,7 @@ public class MovimientoRepo {
     @Autowired
     private JdbcTemplate jdbc;
 
+    // Clase interna existente (la dejamos por compatibilidad)
     public static class Movimiento {
         public Integer idMovimiento;
         public java.time.LocalDateTime fecha;
@@ -62,5 +64,17 @@ public class MovimientoRepo {
             m.idVenta = rs.getObject("id_venta") != null ? rs.getInt("id_venta") : null;
             return m;
         }, limit);
+    }
+
+    // --- NUEVO MÉTODO PARA HISTORIAL COMPLETO (CON NOMBRES) ---
+    public List<Map<String, Object>> listarHistorialCompleto() {
+        String sql = "SELECT m.id_movimiento, m.fecha, m.tipo_movimiento, m.cantidad, m.motivo, " +
+                     "p.sku, p.nombre AS nombre_producto, " +
+                     "u.nombre_completo AS usuario " +
+                     "FROM MOVIMIENTO_INVENTARIO m " +
+                     "JOIN PRODUCTO p ON m.id_producto = p.id_producto " +
+                     "JOIN USUARIO u ON m.id_usuario = u.id_usuario " +
+                     "ORDER BY m.id_movimiento DESC";
+        return jdbc.queryForList(sql);
     }
 }

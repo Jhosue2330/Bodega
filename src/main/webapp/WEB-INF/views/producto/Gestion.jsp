@@ -8,50 +8,41 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gestión de Productos</title>
-    <!-- CSS estático desde /static/css -->
     <link rel="stylesheet" href="../CSS/Gestion.css" />
     <link rel="stylesheet" href="../CSS/Navbar.css" />
   </head>
   <body data-page="gestion">
     <header id="navbar">
-      <%-- Incluye el NAVBAR PÚBLICO --%> <%@ include file="../componentes/navbar_bodega.jsp" %>
+      <%@ include file="../componentes/navbar_bodega.jsp" %>
     </header>
 
     <main class="wrap">
-      <!-- Mensaje flash -->
-      <c:if test="${not empty mensaje}">
-        <div class="sv-alert success">${mensaje}</div>
-      </c:if>
+      <c:if test="${not empty mensaje}"><div class="sv-alert success">${mensaje}</div></c:if>
 
-      <!-- Encabezado -->
       <header class="top">
         <div>
-          <h1>Gestión de Productos</h1>
-          <p class="muted">Catálogo, stock y precios.</p>
+          <h1>Gestión de Catálogo</h1>
+          <p class="muted">Define precios y productos nuevos.</p>
         </div>
-        <a href="#nuevo" class="btn pri">+ Nuevo</a>
+        <a href="<c:url value='/producto/nuevo'/>" class="btn pri">+ Nuevo Producto</a>
       </header>
 
-      <!-- Barra de búsqueda (si luego agregas endpoint, cambia href/action) -->
       <section class="bar">
         <form action="<c:url value='/producto/gestion'/>" method="get" class="bar">
-          <input class="in" type="search" name="q" placeholder="Buscar por nombre o código…" />
+          <input class="in" type="search" name="q" placeholder="Buscar producto…" />
           <select class="in" name="estado">
             <option value="">Todos</option>
             <option value="ACTIVO">Activos</option>
             <option value="INACTIVO">Inactivos</option>
           </select>
-          <a class="btn" href="<c:url value='/producto/export/json'/>">Exportar JSON</a>
+          <button class="btn">Filtrar</button>
         </form>
       </section>
 
-      <!-- Tabla de productos -->
       <section class="card">
         <div class="cardh">
-          <h2>Listado</h2>
-          <span class="badge">
-            <c:out value="${empty productos ? 0 : fn:length(productos)}" />
-          </span>
+          <h2>Listado de Productos</h2>
+          <span class="badge"><c:out value="${empty productos ? 0 : fn:length(productos)}" /></span>
         </div>
 
         <div class="tblwrap">
@@ -61,114 +52,36 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                 <th>Código</th>
                 <th>Nombre</th>
                 <th>Precio (S/)</th>
-                <th>Stock</th>
-                <th>Estado</th>
-                <th class="c">Acciones</th>
+                <th>Alerta Mín.</th>
+                <th>Stock Actual</th> <th>Estado</th>
+                <th class="c">Editar</th>
               </tr>
             </thead>
             <tbody>
               <c:forEach var="p" items="${productos}">
                 <tr>
                   <td>${p.sku}</td>
-                  <td>${p.nombre}</td>
-                  <td>${p.precio}</td>
-                  <td>${p.stockActual}</td>
+                  <td><strong>${p.nombre}</strong></td>
+                  <td style="color: #2563eb; font-weight: bold;">S/ ${p.precio}</td>
+                  <td>${p.stockMinimo} ud.</td>
+                  <td class="muted">${p.stockActual}</td>
                   <td>
                     <span class="tag ${p.activo ? 'ok' : 'warn'}">
-                      <c:out value="${p.activo ? 'Activo' : 'Inactivo'}" />
+                      ${p.activo ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td class="c">
-                    <a
-                      class="icon"
-                      title="Editar"
-                      href="<c:url value='/producto/editar/${p.idProducto}'/>"
-                      >✎</a
-                    >
-
-                    <form
-                      action="<c:url value='/producto/eliminar/${p.idProducto}'/>"
-                      method="post"
-                      style="display: inline"
-                      onsubmit="return confirm('¿Eliminar este producto?');"
-                    >
-                      <button class="icon" type="submit" title="Eliminar">🗑</button>
-                    </form>
+                    <a class="btn tiny" href="<c:url value='/producto/editar/${p.idProducto}'/>">Editar Datos</a>
                   </td>
                 </tr>
               </c:forEach>
-
-              <c:if test="${empty productos}">
-                <tr>
-                  <td colspan="6">No hay productos.</td>
-                </tr>
-              </c:if>
+              <c:if test="${empty productos}"><tr><td colspan="7">No hay productos.</td></tr></c:if>
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- Crear nuevo producto (conectado a BD) -->
-      <details id="nuevo" class="newbox">
-        <summary class="btn link">➕ Crear nuevo producto</summary>
-
-        <form class="form" action="<c:url value='/producto/guardar'/>" method="post">
-          <div class="grid">
-            <label>
-              <span>Código (SKU)*</span>
-              <input class="in" name="sku" required />
-            </label>
-
-            <label>
-              <span>Nombre</span>
-              <input class="in" name="nombre" required />
-            </label>
-
-            <label>
-              <span>Precio*</span>
-              <input class="in" name="precio" type="number" step="0.01" min="0" required />
-            </label>
-
-            <label>
-              <span>Stock</span>
-              <input class="in" name="stockActual" type="number" min="0" required />
-            </label>
-
-            <label>
-              <span>Stock mínimo</span>
-              <input class="in" name="stockMinimo" type="number" min="0" value="0" />
-            </label>
-
-            <label>
-              <span>Categoría</span>
-              <select class="in" name="idCategoria" required>
-                <c:forEach var="cat" items="${categorias}">
-                  <option value="${cat.idCategoria}">${cat.nombre}</option>
-                </c:forEach>
-              </select>
-            </label>
-
-            <label>
-              <span>Estado</span>
-              <select class="in" name="activo">
-                <option value="true" selected>Activo</option>
-                <option value="false">Inactivo</option>
-              </select>
-            </label>
-
-            <!-- Si quieres mantener “Descripción” visual, pero no está en la entidad:
-          <label class="span-2">
-            <span>Descripción</span>
-            <textarea class="in" rows="3" name="descripcion"></textarea>
-          </label>
-          --></div>
-
-          <div class="actions">
-            <a class="btn" href="#top">Cancelar</a>
-            <button class="btn pri" type="submit">Guardar</button>
-          </div>
-        </form>
-      </details>
+      
     </main>
   </body>
 </html>

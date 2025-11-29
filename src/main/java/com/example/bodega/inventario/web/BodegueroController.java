@@ -2,7 +2,7 @@ package com.example.bodega.inventario.web;
 
 import com.example.bodega.inventario.repo.MovimientoRepo;
 import com.example.bodega.inventario.service.MovimientoService;
-import com.example.bodega.Venta.repository.VentaRepository;
+import com.example.bodega.Venta.repository.VentaRepository; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +25,7 @@ public class BodegueroController {
     @Autowired
     private MovimientoRepo movimientoRepo;
 
+    // --- DASHBOARD ---
     @GetMapping({"/dashboard", ""})
     public String dashboard(Model model,
                             @RequestParam(value = "q", required = false) String q,
@@ -34,7 +35,7 @@ public class BodegueroController {
 
         List<?> productos = (q != null && !q.trim().isEmpty()) ? productoRepo.buscarProductos(q) : productoRepo.buscarProductos("");
         List<?> categorias = java.util.Collections.emptyList();
-        List<?> usuarios = java.util.Collections.emptyList();
+        List<?> usuarios = java.util.Collections.emptyList(); 
 
         model.addAttribute("productos", productos);
         model.addAttribute("categorias", categorias);
@@ -44,6 +45,7 @@ public class BodegueroController {
         return "bodega/Bodeguero";
     }
 
+    // --- ENTRADA INDIVIDUAL ---
     @GetMapping("/entrada")
     public String entradaForm(@RequestParam(value = "id", required = false) Integer idProducto, Model model) {
         List<?> productos = productoRepo.buscarProductos("");
@@ -72,6 +74,7 @@ public class BodegueroController {
         return "redirect:/bodeguero/dashboard";
     }
 
+    // --- SALIDA INDIVIDUAL ---
     @GetMapping("/salida")
     public String salidaForm(@RequestParam(value = "id", required = false) Integer idProducto, Model model) {
         List<?> productos = productoRepo.buscarProductos("");
@@ -101,9 +104,55 @@ public class BodegueroController {
         return "redirect:/bodeguero/dashboard";
     }
 
+    // --- HISTORIAL (CORREGIDO) ---
     @GetMapping("/historial")
     public String historial(Model model) {
-        model.addAttribute("movimientos", java.util.Collections.emptyList());
+        // AHORA SÍ LLAMAMOS AL SERVICIO PARA TRAER DATOS REALES
+        List<?> movimientos = movimientoService.verHistorial();
+        model.addAttribute("movimientos", movimientos);
         return "inventario/Historial";
+    }
+
+    // --- MOVIMIENTO MASIVO ---
+    @GetMapping("/movimientos/nuevo")
+    public String nuevoMovimientoMasivo(Model model) {
+        List<?> productos = productoRepo.buscarProductos("");
+        model.addAttribute("productos", productos);
+        model.addAttribute("usuarios", java.util.Collections.emptyList());
+        return "inventario/MovimientoMasivo"; 
+    }
+
+    @PostMapping("/movimientos/guardar-masivo")
+    public String guardarMasivo(
+            @RequestParam(value = "idProducto", required = false) List<Integer> idsProductos,
+            @RequestParam(value = "cantidad", required = false) List<Integer> cantidades,
+            @RequestParam(value = "tipo", required = false) List<String> tipos, 
+            @RequestParam(value = "motivo", required = false) String motivo,
+            @RequestParam(value = "idUsuario", required = false) Integer idUsuario,
+            RedirectAttributes ra) {
+
+        int contExito = 0;
+        try {
+            if (idsProductos != null) {
+                for (int i = 0; i < idsProductos.size(); i++) {
+                    Integer idProd = idsProductos.get(i);
+                    Integer cant = cantidades.get(i);
+                    String tipo = tipos.get(i); 
+
+                    if (idProd != null && cant != null && cant > 0) {
+                        if ("ENTRADA".equals(tipo)) {
+                            movimientoService.registrarEntrada(idProd, cant, motivo == null || motivo.isBlank() ? "Entrada Masiva" : motivo, idUsuario);
+                        } else {
+                            movimientoService.registrarSalida(idProd, cant, motivo == null || motivo.isBlank() ? "Salida Masiva" : motivo, idUsuario, null);
+                        }
+                        contExito++;
+                    }
+                }
+            }
+            ra.addFlashAttribute("mensaje", "Se registraron " + contExito + " movimientos correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error en carga masiva: " + e.getMessage());
+        }
+        return "redirect:/bodeguero/dashboard";
     }
 }

@@ -1,3 +1,7 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,155 +9,120 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Historial de movimientos — Bodega</title>
 
-  <!-- Reusa tus estilos -->
-  <link rel="stylesheet" href="../CSS/Main.css"/>
-  <link rel="stylesheet" href="../CSS/Navbar.css"/>
-  <link rel="stylesheet" href="../CSS/Footer.css"/>
-  <!-- Opcional si ya lo tienes: estilos de formularios/tablas de movimientos -->
-  <link rel="stylesheet" href="../CSS/Movimientos.css"/>
+  <link rel="stylesheet" href="<c:url value='/CSS/Main.css'/>"/>
+  <link rel="stylesheet" href="<c:url value='/CSS/Navbar.css'/>"/>
+  <link rel="stylesheet" href="<c:url value='/CSS/Bodeguero.css'/>"/>
+  <link rel="stylesheet" href="<c:url value='/CSS/Footer.css'/>"/>
+  
+  <style>
+      /* Estilos para las etiquetas de Entrada/Salida */
+      .chip { padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; text-transform: uppercase; }
+      .chip.in { background-color: #dcfce7; color: #166534; }  /* Verde */
+      .chip.out { background-color: #fee2e2; color: #991b1b; } /* Rojo */
+      
+      /* Ajuste tabla */
+      .table th { background: #f9fafb; color: #374151; font-weight: 600; }
+      .table td { vertical-align: middle; }
+  </style>
 </head>
 <body class="bodega-page">
 
-  <!-- NAVBAR -->
-  <nav class="navbar sv-navbar">
-    <div class="logo">Sistema · Bodega</div>
-    <ul class="nav-links">
-      <li><a class="nav-link" href="Bodeguero.html">Bodega</a></li>
-      <li><a class="nav-link" href="Venta.html">Ventas</a></li>
-      <li><a class="nav-link" href="Delivery.html">Delivery</a></li>
-      <li><a class="nav-link" href="Gestion.html">Gestión</a></li>
-      <li class="has-sub">
-        <a class="nav-link" href="#">Productos ▾</a>
-        <ul class="sub">
-          <li><a class="nav-link" href="Producto-Crear.html">Crear producto</a></li>
-          <li><a class="nav-link" href="Producto-Editar.html">Editar producto</a></li>
-        </ul>
-      </li>
-      <li><a class="nav-link" href="Metricas.html">Métricas</a></li>
-      <li><a class="btn nav-link" href="Main.html">Salir</a></li>
-    </ul>
-    <button class="menu-toggle" aria-label="Menú">☰</button>
-  </nav>
+  <header id="navbar">
+      <%@ include file="../componentes/navbar_bodega.jsp" %>
+  </header>
 
   <main class="wrap">
-    <!-- Tabs de navegación entre secciones -->
     <div class="tabs" style="margin-top:10px;">
-      <a class="tab" href="Bodeguero.html">Stock</a>
-      <span class="tab active">Historial</span>
-      <a class="tab" href="Delivery.html">Pedidos Delivery</a>
-      <a class="tab" href="Venta.html">Ventas</a>
+      <a class="tab" href="<c:url value='/bodeguero/dashboard'/>">Stock Actual</a>
+      <span class="tab active">Historial (Kardex)</span>
     </div>
 
-    <!-- Encabezado + acción principal -->
     <header class="page-head">
       <div>
-        <h2 style="margin:0">Historial de movimientos</h2>
+        <h2 style="margin:0">Historial de Movimientos</h2>
         <p class="sub" style="margin:6px 0 0">
-          Consulta y corrige entradas/salidas. Para registrar uno nuevo usa <em>“Nuevo movimiento (varios productos)”</em>.
+           Registro completo de entradas y salidas de inventario.
         </p>
       </div>
       <div class="actions">
-        <a class="btn" href="Movimiento-Nuevo.html">+ Nuevo movimiento (varios productos)</a>
+        <a class="btn" href="<c:url value='/bodeguero/movimientos/nuevo'/>">+ Movimiento Masivo</a>
       </div>
     </header>
 
-    <!-- Filtros (maqueta) -->
     <section class="card">
-      <div class="tools">
-        <input class="input" placeholder="Buscar por SKU / producto / referencia… (mock)"/>
-        <select class="select">
-          <option>Todos los tipos</option>
-          <option>Entrada</option>
-          <option>Salida</option>
-        </select>
-        <select class="select">
-          <option>Todos los estados</option>
-          <option>Vigente</option>
-          <option>Anulado</option>
-        </select>
-      </div>
-
-      <!-- Tabla de movimientos -->
+      
       <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>ID</th><th>Fecha</th><th>Tipo</th><th>SKU</th><th>Producto</th><th>Cant.</th><th>Referencia</th><th style="text-align:right;">Acciones</th>
+              <th>ID</th>
+              <th>Fecha y Hora</th>
+              <th>Tipo</th>
+              <th>SKU</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Referencia / Motivo</th>
+              <th>Responsable</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Fila anclada al SKU (para #P-0001 desde Bodeguero) -->
-            <tr id="P-0001">
-              <td>MV-0007</td>
-              <td>10/10/2025 10:40</td>
-              <td><span class="chip in">Entrada</span></td>
-              <td>P-0001</td>
-              <td>Arroz 5Kg</td>
-              <td>20</td>
-              <td>Compra prov. 123</td>
-              <td style="text-align:right;">
-                <a class="btn tiny" href="Movimiento-Editar.html">Corregir</a>
-                <a class="btn tiny danger" href="Movimiento-Anular.html">Anular</a>
-              </td>
-            </tr>
-            <tr id="P-0002">
-              <td>MV-0006</td>
-              <td>10/10/2025 09:15</td>
-              <td><span class="chip out">Salida</span></td>
-              <td>P-0002</td>
-              <td>Azúcar 1Kg</td>
-              <td>3</td>
-              <td>Venta POS #845</td>
-              <td style="text-align:right;">
-                <a class="btn tiny" href="Movimiento-Editar.html">Corregir</a>
-                <a class="btn tiny danger" href="Movimiento-Anular.html">Anular</a>
-              </td>
-            </tr>
-            <tr id="P-0003">
-              <td>MV-0005</td>
-              <td>09/10/2025 18:22</td>
-              <td><span class="chip in">Entrada</span></td>
-              <td>P-0003</td>
-              <td>Aceite 1L</td>
-              <td>15</td>
-              <td>Compra prov. 119</td>
-              <td style="text-align:right;">
-                <a class="btn tiny" href="Movimiento-Editar.html">Corregir</a>
-                <a class="btn tiny danger" href="Movimiento-Anular.html">Anular</a>
-              </td>
-            </tr>
-            <!-- Ejemplo de anulado -->
-            <tr>
-              <td>MV-0004</td>
-              <td>09/10/2025 12:10</td>
-              <td><span class="chip out">Salida</span></td>
-              <td>P-0001</td>
-              <td>Arroz 5Kg</td>
-              <td>2</td>
-              <td>Delivery 77</td>
-              <td style="text-align:right;">
-                <span class="sub">Anulado</span>
-              </td>
-            </tr>
+            <c:forEach var="m" items="${movimientos}">
+                <tr>
+                  <td class="muted">#${m.ID_MOVIMIENTO}</td>
+                  
+                  <td>
+                    <c:catch>
+                        <fmt:parseDate value="${m.FECHA}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="parsedDate" type="both" />
+                        <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                    </c:catch>
+                    <c:if test="${empty parsedDate}">${m.FECHA}</c:if>
+                  </td>
+
+                  <td>
+                    <c:choose>
+                        <c:when test="${m.TIPO_MOVIMIENTO == 'ENTRADA'}">
+                            <span class="chip in">Entrada</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="chip out">Salida</span>
+                        </c:otherwise>
+                    </c:choose>
+                  </td>
+
+                  <td>${m.SKU}</td>
+                  <td><strong>${m.NOMBRE_PRODUCTO}</strong></td>
+                  
+                  <td style="font-weight: bold; font-size: 1.1em;">
+                    ${m.CANTIDAD}
+                  </td>
+                  
+                  <td class="muted">
+                    <c:out value="${m.MOTIVO}" default="-" />
+                  </td>
+                  
+                  <td>
+                    <small style="color:#6b7280;">${m.USUARIO}</small>
+                  </td>
+                </tr>
+            </c:forEach>
+
+            <c:if test="${empty movimientos}">
+                <tr>
+                    <td colspan="8" style="text-align:center; padding: 30px; color: #6b7280;">
+                        No se encontraron movimientos registrados en el historial.
+                        <br>
+                        <a href="<c:url value='/bodeguero/movimientos/nuevo'/>" style="color:#2563eb;">Registrar el primero ahora</a>
+                    </td>
+                </tr>
+            </c:if>
           </tbody>
         </table>
       </div>
-
-      <p class="note">Tip: desde <a href="Bodeguero.html">Stock</a> tienes atajos de “Entrada rápida / Salida rápida” por producto.</p>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer-content">
-      <p>© 2025 Sistema de Ventas – Maqueta</p>
-      <ul class="social-links">
-        <li><a href="#">Facebook</a></li>
-        <li><a href="#">Instagram</a></li>
-        <li><a href="#">LinkedIn</a></li>
-        <li><a href="#">WhatsApp</a></li>
-      </ul>
-    </div>
+    <div class="footer-content"><p>© 2025 Sistema de Ventas</p></div>
   </footer>
 
 </body>
