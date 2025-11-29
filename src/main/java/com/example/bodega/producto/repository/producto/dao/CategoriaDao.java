@@ -1,6 +1,6 @@
-package com.example.bodega.repository.producto.dao;
+package com.example.bodega.producto.repository.producto.dao;
 
-import com.example.bodega.model.producto.Categoria;
+import com.example.bodega.producto.model.producto.Categoria;
 
 import java.util.List;
 import java.util.Optional;

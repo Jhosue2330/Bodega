@@ -1,4 +1,4 @@
-package com.example.bodega.Controller;
+package com.example.bodega.producto.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +15,6 @@ public class PagesController {
     public String catalogo() {
         return "publico/Catalogo"; // Página del catálogo
     }
-
-   /*/ @GetMapping("/publicidad")
-    public String publicidad() {
-        return "publico/Publicidad"; // Página de publicidad
-    }*/
 
     @GetMapping("/contacto")
     public String contacto() {

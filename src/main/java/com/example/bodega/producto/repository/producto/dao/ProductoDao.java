@@ -1,10 +1,10 @@
 // src/main/java/com/example/bodega/repository/producto/dao/ProductoDao.java
-package com.example.bodega.repository.producto.dao;
+package com.example.bodega.producto.repository.producto.dao;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.example.bodega.model.producto.Producto;
+import com.example.bodega.producto.model.producto.Producto;
 
 public interface ProductoDao {
 

@@ -78,23 +78,22 @@ INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, sub
 VALUES (5, 2, 1, 12.00, 12.00);
 
 -- =======================================================
--- 6) VENTAS DE HOY (Pedidos del día) - IDS FORZADOS
+-- 5) PRODUCTOS (referencian CATEGORIA)
+--    Nota: asume IDs autogenerados de categoría: 
+--          1=Abarrotes, 2=Bebidas, 3=Snacks y Dulces, 4=Limpieza, 5=Licores
 -- =======================================================
+INSERT INTO PRODUCTO (nombre, sku, precio, stock_actual, stock_minimo, id_categoria, activo) VALUES
+  ('Arroz Costeño ','001',  24.50, 50, 10, 1, TRUE),
+  ('Aceite Primor ','002',  11.90, 30,  5, 1, TRUE),
+  ('Gaseosa Coca-Cola ','003', 10.00, 45, 15, 2, TRUE),
+  ('Six Pack Cerveza Pilsen','004',  35.00, 20,  8, 5, TRUE);
 
--- Venta 6: Hoy
-INSERT INTO VENTA (id_venta, fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta) 
-VALUES (6, CURRENT_TIMESTAMP(), 'POS', 30.00, 0, 1, 1);
-
-INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, subtotal) 
-VALUES (6, 1, 4, 7.50, 30.00);
-
--- Venta 7: Hoy
-INSERT INTO VENTA (id_venta, fecha, tipo_venta, total, descuento, id_vendedor, id_estado_venta) 
-VALUES (7, CURRENT_TIMESTAMP(), 'POS', 120.00, 0, 1, 1);
-
-INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, subtotal) 
-VALUES (7, 2, 10, 12.00, 120.00);
-
--- AJUSTE IMPORTANTE PARA AUTO_INCREMENT
--- Como insertamos manualmente hasta el ID 7, le decimos a H2 que el próximo sea el 8
-ALTER TABLE VENTA ALTER COLUMN id_venta RESTART WITH 8;
+INSERT INTO PRODUCTO (sku, nombre, precio, stock_actual, stock_minimo, activo) VALUES
+('P-0001','Audífonos Pro',89.90,10,1,true),
+('P-0002','Mouse Inalámbrico',49.50,20,2,true),
+('P-0003','Teclado Mecánico',199.00,5,1,true);
+-- (Opcional) Semillas para PROMOCION si quieres probar el módulo:
+-- INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo) VALUES
+--   ('Promo Verano', 'Descuentos en bebidas', DATE '2025-01-01', DATE '2025-02-15', TRUE);
+-- INSERT INTO PROMOCION_PRODUCTO (id_promocion, id_producto, descuento_pct) VALUES
+--   (1, 3, 10.00);

@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import com.example.bodega.config.AuthInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -35,7 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     // Login interceptor (asegúrate de tener AuthInterceptor.java creado)
-    registry.addInterceptor(new AuthInterceptor()).addPathPatterns("/**");
+ 
 
     // Cambiar idioma
     registry.addInterceptor(localeChangeInterceptor());

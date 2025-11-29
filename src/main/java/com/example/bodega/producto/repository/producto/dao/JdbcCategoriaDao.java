@@ -1,4 +1,4 @@
-package com.example.bodega.repository.producto.dao;
+package com.example.bodega.producto.repository.producto.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.example.bodega.model.producto.Categoria;
+import com.example.bodega.producto.model.producto.Categoria;
 
 @Repository
 public class JdbcCategoriaDao implements CategoriaDao {

@@ -1,8 +1,8 @@
-package com.example.bodega.Service.producto;
+package com.example.bodega.producto.Service.producto;
 
 import java.util.List;
 
-import com.example.bodega.model.producto.Producto;
+import com.example.bodega.producto.model.producto.Producto;
 
 public interface ProductoService {
 
