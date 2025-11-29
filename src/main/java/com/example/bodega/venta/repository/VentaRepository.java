@@ -76,7 +76,7 @@ public class VentaRepository {
     // Nuevo método para mostrar tabla inferior
     public List<Map<String, Object>> listarUltimasVentas() {
         String sql = "SELECT id_venta AS idVenta, fecha, tipo_venta AS tipoVenta, total " +
-                     "FROM VENTA ORDER BY id_venta DESC LIMIT 5";
+                     "FROM VENTA ORDER BY id_venta DESC LIMIT 10";
         return jdbcTemplate.queryForList(sql);
     }
 
