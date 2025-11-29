@@ -76,3 +76,14 @@ VALUES (3, '2025-11-23 09:00:00', 'POS', 22.50, 0, 1, 1);
 -- Arriba, el producto 1 es "Arroz Costeño" (porque es el primero que insertamos).
 INSERT INTO DETALLE_VENTA (id_venta, id_producto, cantidad, precio_unitario, subtotal) 
 VALUES (3, 1, 3, 7.50, 22.50);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES 
+('2x1 en gaseosas', 'Solo hasta fin de mes', '2025-02-01', '2030-02-28', TRUE);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES 
+('Descuento del 15% en limpieza', 'Promoción válida para productos de aseo', '2025-02-01', '2030-02-20', TRUE);
+
+INSERT INTO PROMOCION (titulo, descripcion, fecha_inicio, fecha_fin, activo)
+VALUES ('2x1 en gaseosas', 'Solo hasta fin de mes', '2025-02-01', '2030-02-28', TRUE);

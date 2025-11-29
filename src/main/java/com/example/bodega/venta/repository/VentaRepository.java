@@ -69,7 +69,7 @@ public class VentaRepository {
         String sql = "SELECT id_producto AS idProducto, nombre, sku, precio, stock_actual AS stockActual " +
                      "FROM PRODUCTO " +
                      "WHERE activo = TRUE AND (sku LIKE ? OR nombre LIKE ?) " +
-                     "ORDER BY nombre LIMIT 10";
+                     "ORDER BY nombre LIMIT 100";
         return jdbcTemplate.queryForList(sql, "%" + query + "%", "%" + query + "%");
     }
 
@@ -78,5 +78,23 @@ public class VentaRepository {
         String sql = "SELECT id_venta AS idVenta, fecha, tipo_venta AS tipoVenta, total " +
                      "FROM VENTA ORDER BY id_venta DESC LIMIT 5";
         return jdbcTemplate.queryForList(sql);
+    }
+
+    // --- NUEVO MÉTODO PARA BODEGUERO (INVENTARIO COMPLETO) ---
+    public List<Map<String, Object>> listarInventarioCompleto(String query) {
+        String sql = "SELECT " +
+                     "id_producto AS idProducto, " +
+                     "nombre, " +
+                     "sku, " +
+                     "precio, " +
+                     "stock_actual AS stockActual, " +
+                     "stock_minimo AS stockMinimo, " + // IMPORTANTE PARA EL KPI
+                     "activo " +
+                     "FROM PRODUCTO " +
+                     "WHERE activo = TRUE AND (sku LIKE ? OR nombre LIKE ?) " +
+                     "ORDER BY nombre ASC"; // SIN LIMIT (O un limit muy alto como 500)
+        
+        String param = "%" + (query != null ? query : "") + "%";
+        return jdbcTemplate.queryForList(sql, param, param);
     }
 }

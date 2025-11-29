@@ -2,7 +2,8 @@ package com.example.bodega.inventario.web;
 
 import com.example.bodega.inventario.repo.MovimientoRepo;
 import com.example.bodega.inventario.service.MovimientoService;
-import com.example.bodega.Venta.repository.VentaRepository; 
+import com.example.bodega.Venta.repository.VentaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,22 +27,43 @@ public class BodegueroController {
     private MovimientoRepo movimientoRepo;
 
     // --- DASHBOARD ---
+    // En BodegueroController.java
+
     @GetMapping({"/dashboard", ""})
     public String dashboard(Model model,
                             @RequestParam(value = "q", required = false) String q,
-                            @RequestParam(value = "cat", required = false) Integer catId,
                             @ModelAttribute("mensaje") String mensaje,
                             @ModelAttribute("error") String error) {
 
-        List<?> productos = (q != null && !q.trim().isEmpty()) ? productoRepo.buscarProductos(q) : productoRepo.buscarProductos("");
-        List<?> categorias = java.util.Collections.emptyList();
-        List<?> usuarios = java.util.Collections.emptyList(); 
+        // CORRECCIÓN: Usamos el nuevo método listarInventarioCompleto
+        // Si q es null, enviamos "" para que traiga todo
+        List<?> productos = productoRepo.listarInventarioCompleto(q == null ? "" : q);
+        
+        // Calcular KPI de Bajo Stock aquí (Más robusto que en el JSP)
+        int bajosStock = 0;
+        
+        // Casteo seguro para contar en Java
+        for (Object obj : productos) {
+            java.util.Map row = (java.util.Map) obj;
+            // Convertimos a Number para evitar errores entre Integer/Long/BigDecimal de la BD
+            int actual = ((Number) row.get("stockActual")).intValue();
+            int minimo = ((Number) row.get("stockMinimo")).intValue();
+            
+            if (actual <= minimo) {
+                bajosStock++;
+            }
+        }
 
         model.addAttribute("productos", productos);
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("categorias", java.util.Collections.emptyList()); // O tu servicio de categorías
+        model.addAttribute("usuarios", java.util.Collections.emptyList());
+        
+        // Pasamos el KPI ya calculado al JSP
+        model.addAttribute("kpiBajos", bajosStock);
+
         if (mensaje != null && !mensaje.isBlank()) model.addAttribute("mensaje", mensaje);
         if (error != null && !error.isBlank()) model.addAttribute("error", error);
+        
         return "bodega/Bodeguero";
     }
 

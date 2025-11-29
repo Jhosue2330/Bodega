@@ -48,13 +48,7 @@
         <div class="card kpi">
           <div class="label">Alertas (Bajo Stock)</div>
           <div class="value" style="color: #d97706;">
-             <c:set var="low" value="0" />
-             <c:if test="${not empty productos}">
-                <c:forEach var="p" items="${productos}">
-                  <c:if test="${p.stockActual <= p.stockMinimo}"><c:set var="low" value="${low + 1}" /></c:if>
-                </c:forEach>
-             </c:if>
-             ${low}
+             ${kpiBajos}
           </div>
         </div>
       </div>
