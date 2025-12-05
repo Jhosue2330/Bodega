@@ -24,7 +24,11 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
           <h1>Gestión de Catálogo</h1>
           <p class="muted">Define precios y productos nuevos.</p>
         </div>
-        <a href="<c:url value='/producto/nuevo'/>" class="btn pri">+ Nuevo Producto</a>
+        <div style="display:flex; gap:10px;">
+            <a href="<c:url value='/categoria/listar'/>" class="btn secondary" style="background:#fff; border:1px solid #ccc; color:#333;">📂 Categorías</a>
+            
+            <a href="<c:url value='/producto/nuevo'/>" class="btn pri">+ Nuevo Producto</a>
+        </div>
       </header>
 
       <section class="bar">
