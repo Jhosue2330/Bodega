@@ -19,5 +19,5 @@ public class UsuarioRepository {
         } catch (Exception e) {
             return null; // Si falla o no encuentra, retorna null
         }
-    }
+    }  
 }
