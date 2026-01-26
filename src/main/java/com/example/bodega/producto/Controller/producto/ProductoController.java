@@ -1,4 +1,4 @@
-package com.example.bodega.producto.Controller.producto;
+ package com.example.bodega.producto.Controller.producto;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -93,7 +93,7 @@ public class ProductoController {
             } else {
                 // Si solo era una edición (cambio de precio/nombre), volvemos a gestión
                 ra.addFlashAttribute("mensaje", "Producto actualizado correctamente.");
-                return "redirect:/producto/gestion";
+                return "redirect:/pro ducto/gestion";
             }
 
         } catch (Exception e) {

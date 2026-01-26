@@ -13,7 +13,7 @@ import java.util.Map;
 @Controller
 public class LoginController {
 
-    @Autowired
+    @Autowired   
     private LoginService loginService;
 
     @GetMapping("/login")
